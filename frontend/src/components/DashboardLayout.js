@@ -29,6 +29,7 @@ export default function DashboardLayout({ children }) {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Customers', href: '/customers', icon: Users },
     { name: 'Vehicles', href: '/vehicles', icon: Car },
+    { name: 'Appointments', href: '/appointments', icon: Calendar },
     { name: 'Reminders', href: '/reminders', icon: Bell },
   ];
 
