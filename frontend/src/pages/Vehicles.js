@@ -143,12 +143,12 @@ export default function Vehicles() {
                       onValueChange={(value) => setFormData({ ...formData, customer_id: value })}
                       required
                     >
-                      <SelectTrigger className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white">
+                      <SelectTrigger data-testid="vehicle-customer-select" className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white">
                         <SelectValue placeholder="Select customer" />
                       </SelectTrigger>
-                      <SelectContent className="bg-zinc-900 border-zinc-800">
+                      <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
                         {customers.map((customer) => (
-                          <SelectItem key={customer.id} value={customer.id} className="text-white">
+                          <SelectItem key={customer.id} value={customer.id} className="text-white hover:bg-zinc-800">
                             {customer.full_name}
                           </SelectItem>
                         ))}
