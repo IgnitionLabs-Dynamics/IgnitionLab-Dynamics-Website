@@ -11,6 +11,7 @@ import Vehicles from './pages/Vehicles';
 import VehicleDetail from './pages/VehicleDetail';
 import CreateJob from './pages/CreateJob';
 import Reminders from './pages/Reminders';
+import UserManagement from './pages/UserManagement';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
