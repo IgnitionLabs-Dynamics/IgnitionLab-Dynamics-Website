@@ -672,6 +672,31 @@ async def update_reminder_status(reminder_id: str, status: str, current_user: di
     reminder = await db.reminders.find_one({"id": reminder_id}, {"_id": 0})
     return reminder
 
+# ==================== APPOINTMENT ROUTES ====================
+
+@api_router.post("/appointments", response_model=Appointment)
+async def create_appointment(appointment: AppointmentCreate, current_user: dict = Depends(get_current_user)):
+    appointment_obj = Appointment(**appointment.model_dump())
+    await db.appointments.insert_one(appointment_obj.model_dump())
+    return appointment_obj
+
+@api_router.get("/appointments", response_model=List[Appointment])
+async def get_appointments(current_user: dict = Depends(get_current_user)):
+    appointments = await db.appointments.find({}, {"_id": 0}).sort("appointment_date", 1).to_list(1000)
+    return appointments
+
+@api_router.put("/appointments/{appointment_id}/status")
+async def update_appointment_status(appointment_id: str, status_update: StatusUpdate, current_user: dict = Depends(get_current_user)):
+    result = await db.appointments.update_one(
+        {"id": appointment_id},
+        {"$set": {"status": status_update.status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    
+    return {"message": "Appointment status updated successfully"}
+
 # ==================== DASHBOARD STATS ====================
 
 @api_router.get("/dashboard/stats", response_model=DashboardStats)
