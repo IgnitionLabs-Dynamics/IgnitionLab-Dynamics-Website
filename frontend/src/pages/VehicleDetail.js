@@ -224,31 +224,26 @@ export default function VehicleDetail() {
 
       // Job History
       if (jobs.length > 0) {
-        if (yPos > 250) {
-          doc.addPage();
-          yPos = 20;
-        }
+        checkNewPage(30);
 
         doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.setTextColor(245, 158, 11);
         doc.text(`Job History (${jobs.length})`, margin, yPos);
-        yPos += 8;
+        yPos += 10;
 
         jobs.forEach((job, index) => {
-          if (yPos > 250) {
-            doc.addPage();
-            yPos = 20;
-          }
+          checkNewPage(40);
 
           // Job Header
           doc.setFontSize(11);
-          doc.setFont(undefined, 'bold');
+          doc.setFont('helvetica', 'bold');
           doc.setTextColor(0, 0, 0);
           doc.text(`Job #${job.id.slice(0, 8)} - ${formatDate(job.date)}`, margin, yPos);
-          yPos += 6;
+          yPos += 8;
 
           // Job Details
+          doc.setFontSize(9);
           const jobDetails = [
             ['Technician', job.technician_name],
             ['Tune Stage', job.tune_stage || 'N/A'],
@@ -264,19 +259,19 @@ export default function VehicleDetail() {
           if (job.road_test_notes) jobDetails.push(['Road Test Notes', job.road_test_notes]);
           if (job.next_recommendations) jobDetails.push(['Next Recommendations', job.next_recommendations]);
 
-          doc.autoTable({
-            startY: yPos,
-            body: jobDetails,
-            theme: 'plain',
-            margin: { left: margin + 5 },
-            styles: { fontSize: 9, cellPadding: 2 },
-            columnStyles: {
-              0: { fontStyle: 'bold', cellWidth: 50 },
-              1: { cellWidth: 'auto' }
-            }
+          jobDetails.forEach(([label, value]) => {
+            checkNewPage(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${label}:`, margin + 5, yPos);
+            doc.setFont('helvetica', 'normal');
+            
+            const valueLines = doc.splitTextToSize(value, pageWidth - margin - 65);
+            doc.text(valueLines, margin + 60, yPos);
+            yPos += Math.max(7, valueLines.length * 5);
           });
 
-          yPos = doc.lastAutoTable.finalY + 10;
+          drawLine(yPos);
+          yPos += 10;
         });
       }
 
