@@ -109,9 +109,15 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-xs text-zinc-500">
-              Default credentials: IgnitionLab Dynamics / IgnLabDyN@2025
+          <div className="mt-6 text-center">
+            <p className="text-zinc-400 text-sm">
+              Don't have an account?{' '}
+              <button
+                onClick={() => navigate('/register')}
+                className="text-amber-500 hover:text-amber-400 font-semibold"
+              >
+                Register here
+              </button>
             </p>
           </div>
         </div>
