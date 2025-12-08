@@ -1,0 +1,145 @@
+{
+  "project_name": "IgnitionLab Dynamics",
+  "design_philosophy": {
+    "identity": "E1: The Anti-AI Designer",
+    "theme_name": "The Midnight Dyno",
+    "core_concept": "A high-precision 'Control Room' interface for automotive tuning. Dark, industrial, and data-dense. It should feel like the software used to map an ECU—functional, sharp, and electric.",
+    "emotional_tone": "Technical, Authoritative, High-Performance",
+    "visual_style": "Dark Mode Only. High contrast neon accents against deep carbon backgrounds. Grid lines visible. No soft shadows, only sharp definitions."
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Chivo, sans-serif",
+      "body": "Manrope, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "usage_rules": {
+      "headings": "Use 'Chivo' for all page titles and section headers. Weight: 700 or 900. Tracking: tight.",
+      "body": "Use 'Manrope' for all UI text, labels, and table data. It handles numbers exceptionally well.",
+      "mono": "MANDATORY for: VINs, Registration Plates, ECU Codes, Engine Codes, and File Hashes.",
+      "sizes": {
+        "h1": "text-4xl md:text-5xl font-black tracking-tighter",
+        "h2": "text-2xl md:text-3xl font-bold tracking-tight",
+        "h3": "text-xl font-semibold tracking-tight",
+        "body": "text-sm md:text-base leading-relaxed",
+        "small": "text-xs font-medium text-muted-foreground",
+        "mono_data": "text-xs md:text-sm font-mono tracking-wide"
+      }
+    }
+  },
+  "colors": {
+    "palette_strategy": "Archetype 2: Electric & Neon (Future/Speed)",
+    "base_theme": "dark",
+    "primary": {
+      "name": "Ignition Amber",
+      "hex": "#f59e0b",
+      "tailwind": "amber-500",
+      "usage": "Primary CTAs, Active States, Key Metrics"
+    },
+    "secondary": {
+      "name": "Carbon Slate",
+      "hex": "#27272a",
+      "tailwind": "zinc-800",
+      "usage": "Card Backgrounds, Secondary Buttons"
+    },
+    "background": {
+      "name": "Void Black",
+      "hex": "#09090b",
+      "tailwind": "zinc-950",
+      "usage": "Global Background"
+    },
+    "accents": {
+      "success": "#10b981",
+      "warning": "#f59e0b",
+      "error": "#ef4444",
+      "info": "#0ea5e9",
+      "chart_1": "#f59e0b",
+      "chart_2": "#0ea5e9",
+      "chart_3": "#10b981"
+    },
+    "overrides": {
+      "border": "rgba(255,255,255,0.1)",
+      "input_bg": "rgba(0,0,0,0.2)"
+    }
+  },
+  "layout": {
+    "grid_system": "The 'Control Room' Grid",
+    "spacing": {
+      "container_padding": "p-6 md:p-8 lg:p-12",
+      "element_gap": "gap-4 md:gap-6",
+      "section_gap": "gap-8 md:gap-12"
+    },
+    "structure": {
+      "dashboard": "grid-cols-1 md:grid-cols-4 gap-4. Widgets must stretch to fill height.",
+      "forms": "Max-width 2xl. Single column on mobile, two columns on desktop for dense data entry.",
+      "lists": "Table-based or 'Card-List' hybrid. Dense rows with mono-font identifiers."
+    }
+  },
+  "components": {
+    "cards": {
+      "style": "Grid Borders (The Technical Look)",
+      "implementation": "bg-zinc-900/50 border border-zinc-800 backdrop-blur-sm. No shadow. Sharp corners or rounded-sm.",
+      "hover": "border-amber-500/50 transition-colors duration-300"
+    },
+    "buttons": {
+      "primary": "bg-amber-500 text-black hover:bg-amber-400 font-bold uppercase tracking-wider rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.3)]",
+      "secondary": "bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700 rounded-sm",
+      "ghost": "hover:bg-zinc-800/50 text-zinc-400 hover:text-white"
+    },
+    "inputs": {
+      "style": "bg-zinc-950/50 border-zinc-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-sm font-mono text-sm"
+    },
+    "status_badges": {
+      "style": "rounded-full px-2 py-0.5 text-xs font-bold uppercase tracking-wider border",
+      "variants": {
+        "pending": "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+        "completed": "bg-green-500/10 text-green-500 border-green-500/20",
+        "error": "bg-red-500/10 text-red-500 border-red-500/20"
+      }
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Use subtle 'noise' overlay on the main background to give it a gritty, industrial feel.",
+    "borders": "Use 'tracing beam' effects on active cards or key metrics.",
+    "icons": "Phosphor Icons (Duotone) or Lucide React. Use thin strokes (1.5px) to match the technical vibe."
+  },
+  "images": {
+    "login_hero": {
+      "url": "https://images.unsplash.com/photo-1654157925394-4b7809721149?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "alt": "Silver sports car front end in dark studio",
+      "usage": "Full height background on login page with heavy dark overlay (bg-black/80)."
+    },
+    "dashboard_bg": {
+      "url": "https://images.unsplash.com/photo-1647649641463-724358c4387e?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "alt": "Dimly lit car workshop",
+      "usage": "Subtle background texture for dashboard header area."
+    },
+    "job_placeholder": {
+      "url": "https://images.unsplash.com/photo-1633990308758-b26aada5804e?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "alt": "Mechanic working on engine",
+      "usage": "Default image for jobs without photos."
+    }
+  },
+  "accessibility": {
+    "contrast": "Ensure all text meets WCAG AA. Amber text on black is high contrast. Avoid dark grey on black.",
+    "focus_states": "Visible focus rings (Amber-500) are mandatory for keyboard navigation.",
+    "reduced_motion": "Respect prefers-reduced-motion for any glowing/tracing effects."
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Install 'Chivo', 'Manrope', and 'JetBrains Mono' via Google Fonts in index.css.",
+    "2. THEME: Override the Tailwind config to use the 'Zinc' scale for neutrals and 'Amber' for primary.",
+    "3. LAYOUT: Build the 'DashboardLayout' component first using the 'Control Room' grid logic.",
+    "4. COMPONENTS: Customize Shadcn components to remove excessive rounded corners (use rounded-sm or rounded-md max).",
+    "5. DATA: Use the 'mono' font for all technical data (VIN, Reg, Codes) to ensure precision.",
+    "6. MOCK: Mock all API calls initially. Create a 'mockData.js' file with realistic car/job data.",
+    "7. TOASTS: Use 'sonner' for all notifications (Success: Tune Saved, Error: Upload Failed).",
+    "8. TESTING: Add 'data-testid' to all inputs and buttons."
+  ],
+  "universal_guidelines": [
+    "Do not use gradients for backgrounds, use solid dark colors with noise texture.",
+    "Do not center align the app container.",
+    "Use 2-3x more spacing than typical designs.",
+    "Every interaction needs micro-animations.",
+    "Use 'sonner' for toasts."
+  ]
+}
