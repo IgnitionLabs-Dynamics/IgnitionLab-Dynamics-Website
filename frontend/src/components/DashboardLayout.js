@@ -31,6 +31,11 @@ export default function DashboardLayout({ children }) {
     { name: 'Reminders', href: '/reminders', icon: Bell },
   ];
 
+  // Add User Management for admins only
+  if (user?.role === 'admin') {
+    navigation.push({ name: 'Users', href: '/users', icon: Users });
+  }
+
   const handleLogout = () => {
     logout();
     navigate('/login');
