@@ -313,13 +313,24 @@ export default function VehicleDetail() {
               </h1>
               <p className="text-zinc-400">{vehicle.variant} • {vehicle.year}</p>
             </div>
-            <Button
-              onClick={() => navigate(`/jobs/create?vehicle_id=${vehicle.id}`)}
-              data-testid="create-job-for-vehicle-button"
-              className="bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow"
-            >
-              + New Job
-            </Button>
+            <div className="flex space-x-3">
+              <Button
+                onClick={generatePDF}
+                data-testid="download-vehicle-pdf-button"
+                variant="outline"
+                className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10 font-bold uppercase tracking-wider"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download PDF
+              </Button>
+              <Button
+                onClick={() => navigate(`/jobs/create?vehicle_id=${vehicle.id}`)}
+                data-testid="create-job-for-vehicle-button"
+                className="bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow"
+              >
+                + New Job
+              </Button>
+            </div>
           </div>
         </div>
 
