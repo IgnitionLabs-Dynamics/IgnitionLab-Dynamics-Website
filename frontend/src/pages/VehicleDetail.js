@@ -159,11 +159,15 @@ export default function VehicleDetail() {
 
       // Customer Information
       if (customer) {
+        checkNewPage(30);
         doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.setTextColor(245, 158, 11);
         doc.text('Owner Information', margin, yPos);
         yPos += 8;
+
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
 
         const customerData = [
           ['Name', customer.full_name],
@@ -172,17 +176,16 @@ export default function VehicleDetail() {
         if (customer.email) customerData.push(['Email', customer.email]);
         if (customer.address) customerData.push(['Address', customer.address]);
 
-        doc.autoTable({
-          startY: yPos,
-          head: [['Field', 'Value']],
-          body: customerData,
-          theme: 'striped',
-          headStyles: { fillColor: [39, 39, 42], textColor: [245, 158, 11] },
-          margin: { left: margin },
-          styles: { fontSize: 10 }
+        customerData.forEach(([label, value]) => {
+          checkNewPage(10);
+          doc.setFont('helvetica', 'bold');
+          doc.text(`${label}:`, margin + 2, yPos);
+          doc.setFont('helvetica', 'normal');
+          doc.text(value, margin + 30, yPos);
+          yPos += 7;
         });
 
-        yPos = doc.lastAutoTable.finalY + 15;
+        yPos += 10;
       }
 
       // Tune Revisions
