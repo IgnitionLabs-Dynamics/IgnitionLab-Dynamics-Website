@@ -115,41 +115,47 @@ export default function VehicleDetail() {
       // Vehicle Title
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(20);
-      doc.setFont(undefined, 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.text(`${vehicle.make} ${vehicle.model}`, margin, yPos);
       
       doc.setFontSize(12);
-      doc.setFont(undefined, 'normal');
+      doc.setFont('helvetica', 'normal');
       doc.text(`${vehicle.variant} • ${vehicle.year}`, margin, yPos + 7);
       
       yPos += 20;
 
       // Technical Details Section
       doc.setFontSize(14);
-      doc.setFont(undefined, 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.setTextColor(245, 158, 11);
       doc.text('Technical Details', margin, yPos);
       yPos += 8;
 
-      doc.autoTable({
-        startY: yPos,
-        head: [['Field', 'Value']],
-        body: [
-          ['Registration Number', vehicle.registration_number],
-          ['VIN', vehicle.vin],
-          ['Engine Code', vehicle.engine_code],
-          ['ECU Type', vehicle.ecu_type],
-          ['Fuel Type', vehicle.fuel_type],
-          ['Gearbox', vehicle.gearbox],
-          ['Last Odometer', vehicle.odometer_at_last_visit ? `${vehicle.odometer_at_last_visit.toLocaleString()} km` : 'N/A'],
-        ],
-        theme: 'striped',
-        headStyles: { fillColor: [39, 39, 42], textColor: [245, 158, 11] },
-        margin: { left: margin },
-        styles: { fontSize: 10, font: 'courier' }
+      // Manual table for technical details
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(10);
+
+      const technicalData = [
+        ['Registration Number', vehicle.registration_number],
+        ['VIN', vehicle.vin],
+        ['Engine Code', vehicle.engine_code],
+        ['ECU Type', vehicle.ecu_type],
+        ['Fuel Type', vehicle.fuel_type],
+        ['Gearbox', vehicle.gearbox],
+        ['Last Odometer', vehicle.odometer_at_last_visit ? `${vehicle.odometer_at_last_visit.toLocaleString()} km` : 'N/A'],
+      ];
+
+      technicalData.forEach(([label, value]) => {
+        checkNewPage(10);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${label}:`, margin + 2, yPos);
+        doc.setFont('courier', 'normal');
+        doc.text(value, margin + 70, yPos);
+        yPos += 7;
       });
 
-      yPos = doc.lastAutoTable.finalY + 15;
+      yPos += 10;
 
       // Customer Information
       if (customer) {
