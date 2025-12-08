@@ -8,8 +8,7 @@ import { Separator } from '../components/ui/separator';
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { formatDate, formatCurrency, generateWhatsAppMessage, copyToClipboard } from '../lib/utils';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
 import {
   ArrowLeft,
   Car as CarIcon,
