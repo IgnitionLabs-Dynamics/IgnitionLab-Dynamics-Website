@@ -316,6 +316,26 @@ async def login(user_login: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return {"username": current_user["username"], "role": current_user["role"]}
 
+@api_router.post("/auth/register")
+async def register(user_login: UserLogin):
+    # Check if username already exists
+    existing_user = await db.users.find_one({"username": user_login.username}, {"_id": 0})
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists"
+        )
+    
+    # Create new user with technician role by default
+    new_user = User(
+        username=user_login.username,
+        hashed_password=get_password_hash(user_login.password),
+        role="technician"  # Default role for new registrations
+    )
+    await db.users.insert_one(new_user.model_dump())
+    
+    return {"message": "User created successfully", "username": new_user.username}
+
 # ==================== CUSTOMER ROUTES ====================
 
 @api_router.post("/customers", response_model=Customer)
