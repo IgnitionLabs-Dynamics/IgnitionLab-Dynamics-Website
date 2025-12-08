@@ -99,24 +99,42 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {statCards.map((stat) => {
             const Icon = stat.icon;
+            const getNavigationPath = (title) => {
+              switch (title) {
+                case 'Jobs This Week':
+                  return '/vehicles';
+                case 'Pending Payments':
+                  return '/vehicles';
+                case 'Upcoming Reminders':
+                  return '/reminders';
+                case 'Total Customers':
+                  return '/customers';
+                case 'Total Vehicles':
+                  return '/vehicles';
+                default:
+                  return '/';
+              }
+            };
+
             return (
-              <Card
-                key={stat.title}
-                data-testid={`stat-${stat.title.toLowerCase().replace(/\s+/g, '-')}`}
-                className={`bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6 card-hover ${stat.borderColor}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-zinc-400 mb-1">{stat.title}</p>
-                    <p className={`text-3xl font-bold ${stat.color}`}>
-                      {stat.value}
-                    </p>
+              <Link key={stat.title} to={getNavigationPath(stat.title)}>
+                <Card
+                  data-testid={`stat-${stat.title.toLowerCase().replace(/\s+/g, '-')}`}
+                  className={`bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6 card-hover ${stat.borderColor} cursor-pointer transition-transform hover:scale-105`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-sm text-zinc-400 mb-1">{stat.title}</p>
+                      <p className={`text-3xl font-bold ${stat.color}`}>
+                        {stat.value}
+                      </p>
+                    </div>
+                    <div className={`p-3 rounded-sm ${stat.bgColor} ${stat.borderColor} border`}>
+                      <Icon className={`w-6 h-6 ${stat.color}`} />
+                    </div>
                   </div>
-                  <div className={`p-3 rounded-sm ${stat.bgColor} ${stat.borderColor} border`}>
-                    <Icon className={`w-6 h-6 ${stat.color}`} />
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             );
           })}
         </div>
