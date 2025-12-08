@@ -25,7 +25,8 @@ import {
   Copy,
   MessageCircle,
   User,
-  Download
+  Download,
+  Plus
 } from 'lucide-react';
 
 export default function VehicleDetail() {
