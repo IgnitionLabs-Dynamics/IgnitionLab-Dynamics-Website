@@ -9,7 +9,7 @@ import api from '../lib/api';
 import { toast } from 'sonner';
 import { formatDate, formatCurrency, generateWhatsAppMessage, copyToClipboard } from '../lib/utils';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import {
   ArrowLeft,
   Car as CarIcon,
