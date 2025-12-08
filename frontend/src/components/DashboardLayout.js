@@ -12,7 +12,8 @@ import {
   Search,
   Menu,
   X,
-  Wrench
+  Wrench,
+  Calendar
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../lib/api';
