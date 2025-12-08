@@ -392,6 +392,81 @@ export default function VehicleDetail() {
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
               </Button>
+
+              <Dialog open={revisionDialogOpen} onOpenChange={setRevisionDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    data-testid="add-tune-revision-button"
+                    variant="outline"
+                    className="border-green-500/30 text-green-500 hover:bg-green-500/10 font-bold uppercase tracking-wider"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Tune Revision
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="font-heading text-2xl font-bold text-white">
+                      Add Tune Revision
+                    </DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleCreateTuneRevision} className="space-y-4 mt-4">
+                    <div>
+                      <Label htmlFor="revision_label" className="text-zinc-300">
+                        Revision Label <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="revision_label"
+                        data-testid="revision-label-input"
+                        value={revisionFormData.revision_label}
+                        onChange={(e) => setRevisionFormData({ ...revisionFormData, revision_label: e.target.value })}
+                        className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                        placeholder="e.g., v1.2.1, Stage1_v3"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="description" className="text-zinc-300">
+                        Description
+                      </Label>
+                      <Textarea
+                        id="description"
+                        data-testid="revision-description-input"
+                        value={revisionFormData.description}
+                        onChange={(e) => setRevisionFormData({ ...revisionFormData, description: e.target.value })}
+                        className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                        rows={3}
+                        placeholder="What changes were made in this revision?"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="diff_notes" className="text-zinc-300">
+                        Technical Notes
+                      </Label>
+                      <Textarea
+                        id="diff_notes"
+                        data-testid="revision-diff-notes-input"
+                        value={revisionFormData.diff_notes}
+                        onChange={(e) => setRevisionFormData({ ...revisionFormData, diff_notes: e.target.value })}
+                        className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                        rows={2}
+                        placeholder="Technical details of what changed vs previous version"
+                      />
+                    </div>
+
+                    <Button
+                      type="submit"
+                      data-testid="submit-tune-revision-button"
+                      className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow"
+                    >
+                      Add Revision
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+
               <Button
                 onClick={() => navigate(`/jobs/create?vehicle_id=${vehicle.id}`)}
                 data-testid="create-job-for-vehicle-button"
