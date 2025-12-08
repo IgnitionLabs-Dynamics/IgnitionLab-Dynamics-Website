@@ -8,6 +8,8 @@ import { Separator } from '../components/ui/separator';
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { formatDate, formatCurrency, generateWhatsAppMessage, copyToClipboard } from '../lib/utils';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import {
   ArrowLeft,
   Car as CarIcon,
@@ -19,7 +21,8 @@ import {
   QrCode,
   Copy,
   MessageCircle,
-  User
+  User,
+  Download
 } from 'lucide-react';
 
 export default function VehicleDetail() {
