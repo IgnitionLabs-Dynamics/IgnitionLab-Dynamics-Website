@@ -77,8 +77,25 @@ export default function VehicleDetail() {
     try {
       const doc = new jsPDF();
       const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 15;
       let yPos = 20;
+
+      // Helper function to check if we need a new page
+      const checkNewPage = (requiredSpace = 20) => {
+        if (yPos + requiredSpace > pageHeight - 20) {
+          doc.addPage();
+          yPos = 20;
+          return true;
+        }
+        return false;
+      };
+
+      // Helper function to draw a line
+      const drawLine = (y) => {
+        doc.setDrawColor(200, 200, 200);
+        doc.line(margin, y, pageWidth - margin, y);
+      };
 
       // Header
       doc.setFillColor(245, 158, 11);
@@ -86,11 +103,11 @@ export default function VehicleDetail() {
       
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(24);
-      doc.setFont(undefined, 'bold');
+      doc.setFont('helvetica', 'bold');
       doc.text('IgnitionLab Dynamics', margin, 20);
       
       doc.setFontSize(10);
-      doc.setFont(undefined, 'normal');
+      doc.setFont('helvetica', 'normal');
       doc.text('Professional ECU Tuning & Performance Workshop', margin, 28);
       
       yPos = 50;
