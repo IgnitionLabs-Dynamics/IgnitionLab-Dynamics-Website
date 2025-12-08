@@ -190,34 +190,36 @@ export default function VehicleDetail() {
 
       // Tune Revisions
       if (tuneRevisions.length > 0) {
-        if (yPos > 250) {
-          doc.addPage();
-          yPos = 20;
-        }
+        checkNewPage(30);
 
         doc.setFontSize(14);
-        doc.setFont(undefined, 'bold');
+        doc.setFont('helvetica', 'bold');
         doc.setTextColor(245, 158, 11);
         doc.text(`Tune Revision History (${tuneRevisions.length})`, margin, yPos);
-        yPos += 8;
+        yPos += 10;
 
-        const revisionData = tuneRevisions.map(rev => [
-          rev.revision_label,
-          rev.description || 'N/A',
-          formatDate(rev.created_at)
-        ]);
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(9);
 
-        doc.autoTable({
-          startY: yPos,
-          head: [['Version', 'Description', 'Date']],
-          body: revisionData,
-          theme: 'striped',
-          headStyles: { fillColor: [39, 39, 42], textColor: [245, 158, 11] },
-          margin: { left: margin },
-          styles: { fontSize: 9 }
+        tuneRevisions.forEach((rev, index) => {
+          checkNewPage(20);
+          
+          doc.setFont('courier', 'bold');
+          doc.text(`${rev.revision_label}`, margin + 2, yPos);
+          
+          doc.setFont('helvetica', 'normal');
+          const desc = rev.description || 'N/A';
+          const descLines = doc.splitTextToSize(desc, pageWidth - margin * 2 - 60);
+          doc.text(descLines, margin + 50, yPos);
+          
+          doc.text(formatDate(rev.created_at), pageWidth - margin - 30, yPos);
+          
+          yPos += Math.max(7, descLines.length * 4);
+          drawLine(yPos);
+          yPos += 3;
         });
 
-        yPos = doc.lastAutoTable.finalY + 15;
+        yPos += 10;
       }
 
       // Job History
