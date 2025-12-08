@@ -84,6 +84,42 @@ export default function VehicleDetail() {
       .catch(() => toast.error('Failed to copy message'));
   };
 
+  const handleCreateTuneRevision = async (e) => {
+    e.preventDefault();
+    try {
+      // Find the most recent job for this vehicle to link the revision
+      const latestJob = jobs.length > 0 ? jobs[0] : null;
+      
+      if (!latestJob) {
+        toast.error('Please create a job first before adding tune revisions');
+        return;
+      }
+
+      await api.post('/tune-revisions', {
+        job_id: latestJob.id,
+        vehicle_id: vehicleId,
+        revision_label: revisionFormData.revision_label,
+        description: revisionFormData.description || null,
+        diff_notes: revisionFormData.diff_notes || null,
+      });
+
+      toast.success('Tune revision added successfully!');
+      setRevisionDialogOpen(false);
+      setRevisionFormData({
+        revision_label: '',
+        description: '',
+        diff_notes: '',
+      });
+
+      // Refresh tune revisions
+      const revisionsRes = await api.get(`/tune-revisions?vehicle_id=${vehicleId}`);
+      setTuneRevisions(revisionsRes.data);
+    } catch (error) {
+      console.error('Failed to create tune revision:', error);
+      toast.error('Failed to create tune revision');
+    }
+  };
+
   const generatePDF = async () => {
     try {
       const doc = new jsPDF();
