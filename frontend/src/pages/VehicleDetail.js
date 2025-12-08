@@ -32,6 +32,12 @@ export default function VehicleDetail() {
   const [jobs, setJobs] = useState([]);
   const [tuneRevisions, setTuneRevisions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [revisionDialogOpen, setRevisionDialogOpen] = useState(false);
+  const [revisionFormData, setRevisionFormData] = useState({
+    revision_label: '',
+    description: '',
+    diff_notes: '',
+  });
 
   useEffect(() => {
     fetchVehicleData();
