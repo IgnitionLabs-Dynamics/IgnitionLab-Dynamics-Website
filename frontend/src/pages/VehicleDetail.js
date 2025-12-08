@@ -74,6 +74,209 @@ export default function VehicleDetail() {
       .catch(() => toast.error('Failed to copy message'));
   };
 
+  const generatePDF = async () => {
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 15;
+      let yPos = 20;
+
+      // Header
+      doc.setFillColor(245, 158, 11);
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(24);
+      doc.setFont(undefined, 'bold');
+      doc.text('IgnitionLab Dynamics', margin, 20);
+      
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text('Professional ECU Tuning & Performance Workshop', margin, 28);
+      
+      yPos = 50;
+
+      // Vehicle Title
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(20);
+      doc.setFont(undefined, 'bold');
+      doc.text(`${vehicle.make} ${vehicle.model}`, margin, yPos);
+      
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'normal');
+      doc.text(`${vehicle.variant} • ${vehicle.year}`, margin, yPos + 7);
+      
+      yPos += 20;
+
+      // Technical Details Section
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(245, 158, 11);
+      doc.text('Technical Details', margin, yPos);
+      yPos += 8;
+
+      doc.autoTable({
+        startY: yPos,
+        head: [['Field', 'Value']],
+        body: [
+          ['Registration Number', vehicle.registration_number],
+          ['VIN', vehicle.vin],
+          ['Engine Code', vehicle.engine_code],
+          ['ECU Type', vehicle.ecu_type],
+          ['Fuel Type', vehicle.fuel_type],
+          ['Gearbox', vehicle.gearbox],
+          ['Last Odometer', vehicle.odometer_at_last_visit ? `${vehicle.odometer_at_last_visit.toLocaleString()} km` : 'N/A'],
+        ],
+        theme: 'striped',
+        headStyles: { fillColor: [39, 39, 42], textColor: [245, 158, 11] },
+        margin: { left: margin },
+        styles: { fontSize: 10, font: 'courier' }
+      });
+
+      yPos = doc.lastAutoTable.finalY + 15;
+
+      // Customer Information
+      if (customer) {
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(245, 158, 11);
+        doc.text('Owner Information', margin, yPos);
+        yPos += 8;
+
+        const customerData = [
+          ['Name', customer.full_name],
+          ['Phone', customer.phone_number],
+        ];
+        if (customer.email) customerData.push(['Email', customer.email]);
+        if (customer.address) customerData.push(['Address', customer.address]);
+
+        doc.autoTable({
+          startY: yPos,
+          head: [['Field', 'Value']],
+          body: customerData,
+          theme: 'striped',
+          headStyles: { fillColor: [39, 39, 42], textColor: [245, 158, 11] },
+          margin: { left: margin },
+          styles: { fontSize: 10 }
+        });
+
+        yPos = doc.lastAutoTable.finalY + 15;
+      }
+
+      // Tune Revisions
+      if (tuneRevisions.length > 0) {
+        if (yPos > 250) {
+          doc.addPage();
+          yPos = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(245, 158, 11);
+        doc.text(`Tune Revision History (${tuneRevisions.length})`, margin, yPos);
+        yPos += 8;
+
+        const revisionData = tuneRevisions.map(rev => [
+          rev.revision_label,
+          rev.description || 'N/A',
+          formatDate(rev.created_at)
+        ]);
+
+        doc.autoTable({
+          startY: yPos,
+          head: [['Version', 'Description', 'Date']],
+          body: revisionData,
+          theme: 'striped',
+          headStyles: { fillColor: [39, 39, 42], textColor: [245, 158, 11] },
+          margin: { left: margin },
+          styles: { fontSize: 9 }
+        });
+
+        yPos = doc.lastAutoTable.finalY + 15;
+      }
+
+      // Job History
+      if (jobs.length > 0) {
+        if (yPos > 250) {
+          doc.addPage();
+          yPos = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(245, 158, 11);
+        doc.text(`Job History (${jobs.length})`, margin, yPos);
+        yPos += 8;
+
+        jobs.forEach((job, index) => {
+          if (yPos > 250) {
+            doc.addPage();
+            yPos = 20;
+          }
+
+          // Job Header
+          doc.setFontSize(11);
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(`Job #${job.id.slice(0, 8)} - ${formatDate(job.date)}`, margin, yPos);
+          yPos += 6;
+
+          // Job Details
+          const jobDetails = [
+            ['Technician', job.technician_name],
+            ['Tune Stage', job.tune_stage || 'N/A'],
+            ['Odometer', job.odometer_at_visit ? `${job.odometer_at_visit.toLocaleString()} km` : 'N/A'],
+          ];
+
+          if (job.work_performed) jobDetails.push(['Work Performed', job.work_performed]);
+          if (job.mods_installed) jobDetails.push(['Mods Installed', job.mods_installed]);
+          if (job.dyno_results) jobDetails.push(['Dyno Results', job.dyno_results]);
+          if (job.before_ecu_map_version) jobDetails.push(['Before ECU Map', job.before_ecu_map_version]);
+          if (job.after_ecu_map_version) jobDetails.push(['After ECU Map', job.after_ecu_map_version]);
+          if (job.calibration_notes) jobDetails.push(['Calibration Notes', job.calibration_notes]);
+          if (job.road_test_notes) jobDetails.push(['Road Test Notes', job.road_test_notes]);
+          if (job.next_recommendations) jobDetails.push(['Next Recommendations', job.next_recommendations]);
+
+          doc.autoTable({
+            startY: yPos,
+            body: jobDetails,
+            theme: 'plain',
+            margin: { left: margin + 5 },
+            styles: { fontSize: 9, cellPadding: 2 },
+            columnStyles: {
+              0: { fontStyle: 'bold', cellWidth: 50 },
+              1: { cellWidth: 'auto' }
+            }
+          });
+
+          yPos = doc.lastAutoTable.finalY + 10;
+        });
+      }
+
+      // Footer
+      const totalPages = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Page ${i} of ${totalPages} | Generated on ${new Date().toLocaleDateString()}`,
+          pageWidth / 2,
+          doc.internal.pageSize.getHeight() - 10,
+          { align: 'center' }
+        );
+      }
+
+      // Save PDF
+      const fileName = `${vehicle.make}_${vehicle.model}_${vehicle.registration_number}_Record.pdf`.replace(/\s+/g, '_');
+      doc.save(fileName);
+      toast.success('Vehicle record PDF downloaded successfully!');
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+      toast.error('Failed to generate PDF');
+    }
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
