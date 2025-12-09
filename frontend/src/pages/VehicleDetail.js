@@ -830,7 +830,7 @@ export default function VehicleDetail() {
                               )}
                             </div>
                           </div>
-                          <div className="flex space-x-2">
+                          <div className="flex flex-wrap gap-2">
                             <Button
                               onClick={() => handleEditJob(job)}
                               data-testid="edit-job-button"
@@ -840,6 +840,16 @@ export default function VehicleDetail() {
                             >
                               <Edit className="w-4 h-4 mr-2" />
                               Edit
+                            </Button>
+                            <Button
+                              onClick={() => handleDeleteJob(job.id, `#${job.id.slice(0, 8)}`)}
+                              data-testid="delete-job-button"
+                              variant="outline"
+                              size="sm"
+                              className="border-red-500/30 text-red-500 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete
                             </Button>
                             <Button
                               onClick={() => handleCopyWhatsAppMessage(job)}
