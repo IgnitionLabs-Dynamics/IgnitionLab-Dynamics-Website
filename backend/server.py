@@ -95,7 +95,7 @@ async def login(user_login: UserLogin):
     }
 
 @api_router.get("/auth/me")
-async def get_me(current_user: dict = Depends(get_current_user)):
+async def get_me(current_user: dict = Depends(get_current_user_with_db)):
     return {"username": current_user["username"], "role": current_user["role"]}
 
 @api_router.post("/auth/register")
@@ -136,7 +136,7 @@ class UserResponse(BaseModel):
     created_at: str
 
 @api_router.get("/users", response_model=List[UserResponse])
-async def get_users(current_user: dict = Depends(get_current_user)):
+async def get_users(current_user: dict = Depends(get_current_user_with_db)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
@@ -144,7 +144,7 @@ async def get_users(current_user: dict = Depends(get_current_user)):
     return users
 
 @api_router.post("/users", response_model=UserResponse)
-async def create_user(user_data: UserCreate, current_user: dict = Depends(get_current_user)):
+async def create_user(user_data: UserCreate, current_user: dict = Depends(get_current_user_with_db)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
@@ -169,7 +169,7 @@ async def create_user(user_data: UserCreate, current_user: dict = Depends(get_cu
     )
 
 @api_router.put("/users/{user_id}/role")
-async def update_user_role(user_id: str, role_update: RoleUpdate, current_user: dict = Depends(get_current_user)):
+async def update_user_role(user_id: str, role_update: RoleUpdate, current_user: dict = Depends(get_current_user_with_db)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
@@ -184,7 +184,7 @@ async def update_user_role(user_id: str, role_update: RoleUpdate, current_user: 
     return {"message": "User role updated successfully"}
 
 @api_router.delete("/users/{user_id}")
-async def delete_user(user_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_user(user_id: str, current_user: dict = Depends(get_current_user_with_db)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
     
@@ -203,25 +203,25 @@ async def delete_user(user_id: str, current_user: dict = Depends(get_current_use
 # ==================== CUSTOMER ROUTES ====================
 
 @api_router.post("/customers", response_model=Customer)
-async def create_customer(customer: CustomerCreate, current_user: dict = Depends(get_current_user)):
+async def create_customer(customer: CustomerCreate, current_user: dict = Depends(get_current_user_with_db)):
     customer_obj = Customer(**customer.model_dump())
     await db.customers.insert_one(customer_obj.model_dump())
     return customer_obj
 
 @api_router.get("/customers", response_model=List[Customer])
-async def get_customers(current_user: dict = Depends(get_current_user)):
+async def get_customers(current_user: dict = Depends(get_current_user_with_db)):
     customers = await db.customers.find({}, {"_id": 0}).to_list(1000)
     return customers
 
 @api_router.get("/customers/{customer_id}", response_model=Customer)
-async def get_customer(customer_id: str, current_user: dict = Depends(get_current_user)):
+async def get_customer(customer_id: str, current_user: dict = Depends(get_current_user_with_db)):
     customer = await db.customers.find_one({"id": customer_id}, {"_id": 0})
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
     return customer
 
 @api_router.put("/customers/{customer_id}", response_model=Customer)
-async def update_customer(customer_id: str, customer_update: CustomerCreate, current_user: dict = Depends(get_current_user)):
+async def update_customer(customer_id: str, customer_update: CustomerCreate, current_user: dict = Depends(get_current_user_with_db)):
     update_data = customer_update.model_dump()
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
@@ -237,7 +237,7 @@ async def update_customer(customer_id: str, customer_update: CustomerCreate, cur
     return customer
 
 @api_router.get("/customers/search/{query}")
-async def search_customers(query: str, current_user: dict = Depends(get_current_user)):
+async def search_customers(query: str, current_user: dict = Depends(get_current_user_with_db)):
     customers = await db.customers.find(
         {
             "$or": [
@@ -251,7 +251,7 @@ async def search_customers(query: str, current_user: dict = Depends(get_current_
     return customers
 
 @api_router.delete("/customers/{customer_id}")
-async def delete_customer(customer_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_customer(customer_id: str, current_user: dict = Depends(get_current_user_with_db)):
     # Check if customer has vehicles
     vehicles = await db.vehicles.find({"customer_id": customer_id}).to_list(10)
     if vehicles:
@@ -270,7 +270,7 @@ async def delete_customer(customer_id: str, current_user: dict = Depends(get_cur
 # ==================== VEHICLE ROUTES ====================
 
 @api_router.post("/vehicles", response_model=Vehicle)
-async def create_vehicle(vehicle: VehicleCreate, current_user: dict = Depends(get_current_user)):
+async def create_vehicle(vehicle: VehicleCreate, current_user: dict = Depends(get_current_user_with_db)):
     vehicle_obj = Vehicle(**vehicle.model_dump())
     
     # Generate QR code
@@ -292,20 +292,20 @@ async def create_vehicle(vehicle: VehicleCreate, current_user: dict = Depends(ge
     return vehicle_obj
 
 @api_router.get("/vehicles", response_model=List[Vehicle])
-async def get_vehicles(customer_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_vehicles(customer_id: Optional[str] = None, current_user: dict = Depends(get_current_user_with_db)):
     query = {"customer_id": customer_id} if customer_id else {}
     vehicles = await db.vehicles.find(query, {"_id": 0}).to_list(1000)
     return vehicles
 
 @api_router.get("/vehicles/{vehicle_id}", response_model=Vehicle)
-async def get_vehicle(vehicle_id: str, current_user: dict = Depends(get_current_user)):
+async def get_vehicle(vehicle_id: str, current_user: dict = Depends(get_current_user_with_db)):
     vehicle = await db.vehicles.find_one({"id": vehicle_id}, {"_id": 0})
     if not vehicle:
         raise HTTPException(status_code=404, detail="Vehicle not found")
     return vehicle
 
 @api_router.put("/vehicles/{vehicle_id}", response_model=Vehicle)
-async def update_vehicle(vehicle_id: str, vehicle_update: VehicleCreate, current_user: dict = Depends(get_current_user)):
+async def update_vehicle(vehicle_id: str, vehicle_update: VehicleCreate, current_user: dict = Depends(get_current_user_with_db)):
     update_data = vehicle_update.model_dump()
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
@@ -321,7 +321,7 @@ async def update_vehicle(vehicle_id: str, vehicle_update: VehicleCreate, current
     return vehicle
 
 @api_router.get("/vehicles/search/{query}")
-async def search_vehicles(query: str, current_user: dict = Depends(get_current_user)):
+async def search_vehicles(query: str, current_user: dict = Depends(get_current_user_with_db)):
     vehicles = await db.vehicles.find(
         {
             "$or": [
@@ -336,7 +336,7 @@ async def search_vehicles(query: str, current_user: dict = Depends(get_current_u
     return vehicles
 
 @api_router.delete("/vehicles/{vehicle_id}")
-async def delete_vehicle(vehicle_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_vehicle(vehicle_id: str, current_user: dict = Depends(get_current_user_with_db)):
     # Check if vehicle has jobs
     jobs = await db.jobs.find({"vehicle_id": vehicle_id}).to_list(10)
     if jobs:
@@ -360,7 +360,7 @@ async def delete_vehicle(vehicle_id: str, current_user: dict = Depends(get_curre
 # ==================== JOB ROUTES ====================
 
 @api_router.post("/jobs", response_model=Job)
-async def create_job(job: JobCreate, current_user: dict = Depends(get_current_user)):
+async def create_job(job: JobCreate, current_user: dict = Depends(get_current_user_with_db)):
     job_obj = Job(**job.model_dump())
     
     # Update vehicle's odometer
@@ -374,7 +374,7 @@ async def create_job(job: JobCreate, current_user: dict = Depends(get_current_us
     return job_obj
 
 @api_router.get("/jobs", response_model=List[Job])
-async def get_jobs(vehicle_id: Optional[str] = None, customer_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_jobs(vehicle_id: Optional[str] = None, customer_id: Optional[str] = None, current_user: dict = Depends(get_current_user_with_db)):
     query = {}
     if vehicle_id:
         query["vehicle_id"] = vehicle_id
@@ -385,14 +385,14 @@ async def get_jobs(vehicle_id: Optional[str] = None, customer_id: Optional[str] 
     return jobs
 
 @api_router.get("/jobs/{job_id}", response_model=Job)
-async def get_job(job_id: str, current_user: dict = Depends(get_current_user)):
+async def get_job(job_id: str, current_user: dict = Depends(get_current_user_with_db)):
     job = await db.jobs.find_one({"id": job_id}, {"_id": 0})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
 
 @api_router.put("/jobs/{job_id}", response_model=Job)
-async def update_job(job_id: str, job_update: JobCreate, current_user: dict = Depends(get_current_user)):
+async def update_job(job_id: str, job_update: JobCreate, current_user: dict = Depends(get_current_user_with_db)):
     update_data = job_update.model_dump()
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
@@ -415,7 +415,7 @@ async def update_job(job_id: str, job_update: JobCreate, current_user: dict = De
     return job
 
 @api_router.delete("/jobs/{job_id}")
-async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_job(job_id: str, current_user: dict = Depends(get_current_user_with_db)):
     # Delete associated tune revisions and billing
     await db.tune_revisions.delete_many({"job_id": job_id})
     await db.billing.delete_many({"job_id": job_id})
@@ -430,13 +430,13 @@ async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)
 # ==================== TUNE REVISION ROUTES ====================
 
 @api_router.post("/tune-revisions", response_model=TuneRevision)
-async def create_tune_revision(revision: TuneRevisionCreate, current_user: dict = Depends(get_current_user)):
+async def create_tune_revision(revision: TuneRevisionCreate, current_user: dict = Depends(get_current_user_with_db)):
     revision_obj = TuneRevision(**revision.model_dump())
     await db.tune_revisions.insert_one(revision_obj.model_dump())
     return revision_obj
 
 @api_router.get("/tune-revisions", response_model=List[TuneRevision])
-async def get_tune_revisions(vehicle_id: Optional[str] = None, job_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_tune_revisions(vehicle_id: Optional[str] = None, job_id: Optional[str] = None, current_user: dict = Depends(get_current_user_with_db)):
     query = {}
     if vehicle_id:
         query["vehicle_id"] = vehicle_id
@@ -452,7 +452,7 @@ class TuneRevisionUpdate(BaseModel):
     diff_notes: Optional[str] = None
 
 @api_router.put("/tune-revisions/{revision_id}", response_model=TuneRevision)
-async def update_tune_revision(revision_id: str, revision_update: TuneRevisionUpdate, current_user: dict = Depends(get_current_user)):
+async def update_tune_revision(revision_id: str, revision_update: TuneRevisionUpdate, current_user: dict = Depends(get_current_user_with_db)):
     update_data = {
         "revision_label": revision_update.revision_label,
         "description": revision_update.description,
@@ -471,7 +471,7 @@ async def update_tune_revision(revision_id: str, revision_update: TuneRevisionUp
     return revision
 
 @api_router.delete("/tune-revisions/{revision_id}")
-async def delete_tune_revision(revision_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_tune_revision(revision_id: str, current_user: dict = Depends(get_current_user_with_db)):
     result = await db.tune_revisions.delete_one({"id": revision_id})
     
     if result.deleted_count == 0:
@@ -482,19 +482,19 @@ async def delete_tune_revision(revision_id: str, current_user: dict = Depends(ge
 # ==================== BILLING ROUTES ====================
 
 @api_router.post("/billing", response_model=Billing)
-async def create_billing(billing: BillingCreate, current_user: dict = Depends(get_current_user)):
+async def create_billing(billing: BillingCreate, current_user: dict = Depends(get_current_user_with_db)):
     billing_obj = Billing(**billing.model_dump())
     await db.billing.insert_one(billing_obj.model_dump())
     return billing_obj
 
 @api_router.get("/billing", response_model=List[Billing])
-async def get_billing(job_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_billing(job_id: Optional[str] = None, current_user: dict = Depends(get_current_user_with_db)):
     query = {"job_id": job_id} if job_id else {}
     billing = await db.billing.find(query, {"_id": 0}).to_list(1000)
     return billing
 
 @api_router.put("/billing/{billing_id}", response_model=Billing)
-async def update_billing(billing_id: str, billing_update: BillingCreate, current_user: dict = Depends(get_current_user)):
+async def update_billing(billing_id: str, billing_update: BillingCreate, current_user: dict = Depends(get_current_user_with_db)):
     update_data = billing_update.model_dump()
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
@@ -512,19 +512,19 @@ async def update_billing(billing_id: str, billing_update: BillingCreate, current
 # ==================== REMINDER ROUTES ====================
 
 @api_router.post("/reminders", response_model=Reminder)
-async def create_reminder(reminder: ReminderCreate, current_user: dict = Depends(get_current_user)):
+async def create_reminder(reminder: ReminderCreate, current_user: dict = Depends(get_current_user_with_db)):
     reminder_obj = Reminder(**reminder.model_dump())
     await db.reminders.insert_one(reminder_obj.model_dump())
     return reminder_obj
 
 @api_router.get("/reminders", response_model=List[Reminder])
-async def get_reminders(status: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_reminders(status: Optional[str] = None, current_user: dict = Depends(get_current_user_with_db)):
     query = {"status": status} if status else {}
     reminders = await db.reminders.find(query, {"_id": 0}).sort("reminder_date", 1).to_list(1000)
     return reminders
 
 @api_router.put("/reminders/{reminder_id}", response_model=Reminder)
-async def update_reminder_status(reminder_id: str, status: str, current_user: dict = Depends(get_current_user)):
+async def update_reminder_status(reminder_id: str, status: str, current_user: dict = Depends(get_current_user_with_db)):
     result = await db.reminders.update_one(
         {"id": reminder_id},
         {"$set": {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}}
@@ -539,18 +539,18 @@ async def update_reminder_status(reminder_id: str, status: str, current_user: di
 # ==================== APPOINTMENT ROUTES ====================
 
 @api_router.post("/appointments", response_model=Appointment)
-async def create_appointment(appointment: AppointmentCreate, current_user: dict = Depends(get_current_user)):
+async def create_appointment(appointment: AppointmentCreate, current_user: dict = Depends(get_current_user_with_db)):
     appointment_obj = Appointment(**appointment.model_dump())
     await db.appointments.insert_one(appointment_obj.model_dump())
     return appointment_obj
 
 @api_router.get("/appointments", response_model=List[Appointment])
-async def get_appointments(current_user: dict = Depends(get_current_user)):
+async def get_appointments(current_user: dict = Depends(get_current_user_with_db)):
     appointments = await db.appointments.find({}, {"_id": 0}).sort("appointment_date", 1).to_list(1000)
     return appointments
 
 @api_router.put("/appointments/{appointment_id}/status")
-async def update_appointment_status(appointment_id: str, status_update: StatusUpdate, current_user: dict = Depends(get_current_user)):
+async def update_appointment_status(appointment_id: str, status_update: StatusUpdate, current_user: dict = Depends(get_current_user_with_db)):
     result = await db.appointments.update_one(
         {"id": appointment_id},
         {"$set": {"status": status_update.status, "updated_at": datetime.now(timezone.utc).isoformat()}}
@@ -562,7 +562,7 @@ async def update_appointment_status(appointment_id: str, status_update: StatusUp
     return {"message": "Appointment status updated successfully"}
 
 @api_router.delete("/appointments/{appointment_id}")
-async def delete_appointment(appointment_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_appointment(appointment_id: str, current_user: dict = Depends(get_current_user_with_db)):
     result = await db.appointments.delete_one({"id": appointment_id})
     
     if result.deleted_count == 0:
@@ -573,7 +573,7 @@ async def delete_appointment(appointment_id: str, current_user: dict = Depends(g
 # ==================== DASHBOARD STATS ====================
 
 @api_router.get("/dashboard/stats", response_model=DashboardStats)
-async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
+async def get_dashboard_stats(current_user: dict = Depends(get_current_user_with_db)):
     # Jobs this week
     week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     jobs_this_week = await db.jobs.count_documents({"date": {"$gte": week_ago}})
@@ -607,7 +607,7 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
 # ==================== FILE UPLOAD ====================
 
 @api_router.post("/upload")
-async def upload_file(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+async def upload_file(file: UploadFile = File(...), current_user: dict = Depends(get_current_user_with_db)):
     file_id = str(uuid.uuid4())
     file_extension = Path(file.filename).suffix
     file_path = UPLOAD_DIR / f"{file_id}{file_extension}"
@@ -619,7 +619,7 @@ async def upload_file(file: UploadFile = File(...), current_user: dict = Depends
     return {"file_id": file_id, "filename": file.filename, "path": str(file_path)}
 
 @api_router.get("/uploads/{file_id}")
-async def get_file(file_id: str, current_user: dict = Depends(get_current_user)):
+async def get_file(file_id: str, current_user: dict = Depends(get_current_user_with_db)):
     # Find file with any extension
     for file_path in UPLOAD_DIR.glob(f"{file_id}.*"):
         return FileResponse(file_path)
@@ -629,7 +629,7 @@ async def get_file(file_id: str, current_user: dict = Depends(get_current_user))
 # ==================== GLOBAL SEARCH ====================
 
 @api_router.get("/search/{query}")
-async def global_search(query: str, current_user: dict = Depends(get_current_user)):
+async def global_search(query: str, current_user: dict = Depends(get_current_user_with_db)):
     customers = await db.customers.find(
         {
             "$or": [
