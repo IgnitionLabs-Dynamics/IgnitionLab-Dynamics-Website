@@ -80,6 +80,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/jobs"
+        element={
+          <ProtectedRoute>
+            <Jobs />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/jobs/create"
         element={
           <ProtectedRoute>
