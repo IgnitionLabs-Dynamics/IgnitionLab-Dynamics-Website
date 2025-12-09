@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   Wrench,
-  Calendar
+  Calendar,
+  UserCog
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../lib/api';
