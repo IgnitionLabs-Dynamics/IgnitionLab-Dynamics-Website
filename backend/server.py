@@ -712,11 +712,11 @@ async def global_search(query: str, current_user: dict = Depends(get_current_use
         "total_results": len(customers) + len(vehicles)
     }
 
-# ==================== HEALTH CHECK ENDPOINT ====================
+# ==================== HEALTH CHECK ENDPOINTS ====================
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint for Kubernetes probes."""
+    """Health check endpoint for Kubernetes liveness probe."""
     try:
         # Check database connection
         await db.command('ping')
@@ -728,6 +728,23 @@ async def health_check():
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         raise HTTPException(status_code=503, detail="Service unavailable")
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness check endpoint for Kubernetes readiness probe."""
+    try:
+        # Check database connection
+        await db.command('ping')
+        # Check if default admin user exists
+        admin_exists = await db.users.find_one({"username": "IgnitionLab Dynamics"})
+        return {
+            "status": "ready",
+            "database": "connected",
+            "initialized": admin_exists is not None
+        }
+    except Exception as e:
+        logger.error(f"Readiness check failed: {e}")
+        raise HTTPException(status_code=503, detail="Service not ready")
 
 # Include the router in the main app
 app.include_router(api_router)
