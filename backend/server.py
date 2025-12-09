@@ -713,6 +713,15 @@ async def update_tune_revision(revision_id: str, revision_update: TuneRevisionUp
     revision = await db.tune_revisions.find_one({"id": revision_id}, {"_id": 0})
     return revision
 
+@api_router.delete("/tune-revisions/{revision_id}")
+async def delete_tune_revision(revision_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.tune_revisions.delete_one({"id": revision_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Tune revision not found")
+    
+    return {"message": "Tune revision deleted successfully"}
+
 # ==================== BILLING ROUTES ====================
 
 @api_router.post("/billing", response_model=Billing)
