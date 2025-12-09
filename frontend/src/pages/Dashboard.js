@@ -157,33 +157,35 @@ export default function Dashboard() {
           <div className="space-y-3">
             {stats?.recent_jobs && stats.recent_jobs.length > 0 ? (
               stats.recent_jobs.map((job) => (
-                <Card
-                  key={job.id}
-                  data-testid="recent-job-card"
-                  className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-4 card-hover"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <TrendingUp className="w-4 h-4 text-amber-500" />
-                        <span className="font-mono text-sm text-white">
-                          Job #{job.id.slice(0, 8)}
-                        </span>
-                        {job.tune_stage && (
-                          <span className="px-2 py-0.5 text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full">
-                            {job.tune_stage}
+                <Link key={job.id} to={`/vehicle/${job.vehicle_id}`}>
+                  <Card
+                    data-testid="recent-job-card"
+                    className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-4 card-hover cursor-pointer transition-transform hover:scale-[1.01]"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <TrendingUp className="w-4 h-4 text-amber-500" />
+                          <span className="font-mono text-sm text-white">
+                            Job #{job.id.slice(0, 8)}
                           </span>
-                        )}
+                          {job.tune_stage && (
+                            <span className="px-2 py-0.5 text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full">
+                              {job.tune_stage}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-zinc-400">
+                          {job.work_performed || 'Tuning service'}
+                        </p>
+                        <p className="text-xs text-zinc-500 mt-1">
+                          Technician: {job.technician_name} • {formatDate(job.date)}
+                        </p>
                       </div>
-                      <p className="text-sm text-zinc-400">
-                        {job.work_performed || 'Tuning service'}
-                      </p>
-                      <p className="text-xs text-zinc-500 mt-1">
-                        Technician: {job.technician_name} • {formatDate(job.date)}
-                      </p>
+                      <ArrowRight className="w-5 h-5 text-zinc-600 group-hover:text-amber-500 transition-colors" />
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               ))
             ) : (
               <Card className="bg-zinc-900/50 border-zinc-800 p-8 text-center">
