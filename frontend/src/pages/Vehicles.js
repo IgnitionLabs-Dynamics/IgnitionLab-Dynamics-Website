@@ -22,7 +22,7 @@ import {
 } from '../components/ui/select';
 import api from '../lib/api';
 import { toast } from 'sonner';
-import { Plus, Car, ChevronRight } from 'lucide-react';
+import { Plus, Car, ChevronRight, Trash2 } from 'lucide-react';
 
 export default function Vehicles() {
   const [vehicles, setVehicles] = useState([]);
