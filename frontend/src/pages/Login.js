@@ -10,6 +10,7 @@ import { Wrench } from 'lucide-react';
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    const result = await login(username, password);
+    const result = await login(username, password, rememberMe);
     
     if (result.success) {
       toast.success('Login successful!');
