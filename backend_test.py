@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 
 class IgnitionLabAPITester:
-    def __init__(self, base_url="https://workshopwise.preview.emergentagent.com"):
+    def __init__(self, base_url="https://autotunedb.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0
