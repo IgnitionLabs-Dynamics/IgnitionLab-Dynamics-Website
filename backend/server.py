@@ -61,11 +61,11 @@ async def get_current_user_with_db(credentials = Depends(security)):
 @app.on_event("startup")
 async def startup_event():
     # Create default admin user if not exists
-    admin_exists = await db.users.find_one({"username": "IgnitionLab Dynamics"})
+    admin_exists = await db.users.find_one({"username": "admin"})
     if not admin_exists:
         admin_user = User(
-            username="IgnitionLab Dynamics",
-            hashed_password=get_password_hash("IgnLabDyN@2025"),
+            username="admin",
+            hashed_password=get_password_hash("admin"),
             role="admin"
         )
         await db.users.insert_one(admin_user.model_dump())
