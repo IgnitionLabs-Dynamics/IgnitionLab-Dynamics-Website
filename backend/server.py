@@ -1,5 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -7,15 +6,31 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
-import uuid
 from datetime import datetime, timezone, timedelta
-from passlib.context import CryptContext
-from jose import JWTError, jwt
 import qrcode
 from io import BytesIO
 import base64
+
+# Import organized models
+from models.user import User, UserLogin, Token, UserCreate, RoleUpdate, UserResponse
+from models.customer import Customer, CustomerCreate
+from models.vehicle import Vehicle, VehicleCreate
+from models.job import Job, JobCreate
+from models.tune_revision import TuneRevision, TuneRevisionCreate, TuneRevisionUpdate
+from models.billing import Billing, BillingCreate
+from models.reminder import Reminder, ReminderCreate
+from models.appointment import Appointment, AppointmentCreate, StatusUpdate
+from models.dashboard import DashboardStats
+
+# Import auth utilities
+from utils.auth import (
+    verify_password, 
+    get_password_hash, 
+    create_access_token,
+    security,
+    ACCESS_TOKEN_EXPIRE_MINUTES
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -25,279 +40,21 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Security
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-this-in-production')
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+# Create the main app
+app = FastAPI(title="IgnitionLab Dynamics API", version="1.0.0")
 
-security = HTTPBearer()
-
-# Create the main app without a prefix
-app = FastAPI()
-
-# Create a router with the /api prefix
+# Create API router with /api prefix
 api_router = APIRouter(prefix="/api")
 
 # File upload directory
 UPLOAD_DIR = ROOT_DIR / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-# ==================== AUTH UTILITIES ====================
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        token = credentials.credentials
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-    
-    user = await db.users.find_one({"username": username}, {"_id": 0})
-    if user is None:
-        raise credentials_exception
-    return user
-
-# ==================== MODELS ====================
-
-class User(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    username: str
-    hashed_password: str
-    role: str = "admin"  # admin, technician, viewer
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    username: str
-    role: str
-
-class Customer(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    full_name: str
-    phone_number: str
-    whatsapp_number: Optional[str] = None
-    email: Optional[str] = None
-    instagram_handle: Optional[str] = None
-    address: Optional[str] = None
-    gst_number: Optional[str] = None
-    id_proof_reference: Optional[str] = None
-    consent_docs_reference: Optional[str] = None
-    notes: Optional[str] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class CustomerCreate(BaseModel):
-    full_name: str
-    phone_number: str
-    whatsapp_number: Optional[str] = None
-    email: Optional[str] = None
-    instagram_handle: Optional[str] = None
-    address: Optional[str] = None
-    gst_number: Optional[str] = None
-    notes: Optional[str] = None
-
-class Vehicle(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    customer_id: str
-    make: str
-    model: str
-    variant: str
-    engine_code: str
-    ecu_type: str
-    vin: str
-    registration_number: str
-    year: int
-    fuel_type: str
-    gearbox: str
-    odometer_at_last_visit: Optional[int] = None
-    notes: Optional[str] = None
-    qr_code: Optional[str] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class VehicleCreate(BaseModel):
-    customer_id: str
-    make: str
-    model: str
-    variant: str
-    engine_code: str
-    ecu_type: str
-    vin: str
-    registration_number: str
-    year: int
-    fuel_type: str
-    gearbox: str
-    odometer_at_last_visit: Optional[int] = None
-    notes: Optional[str] = None
-
-class Job(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    vehicle_id: str
-    customer_id: str
-    date: str
-    technician_name: str
-    work_performed: Optional[str] = None
-    tune_stage: Optional[str] = None
-    mods_installed: Optional[str] = None
-    dyno_results: Optional[str] = None
-    before_ecu_map_version: Optional[str] = None
-    after_ecu_map_version: Optional[str] = None
-    files_uploaded: Optional[List[str]] = None
-    afr_graph_screenshots: Optional[List[str]] = None
-    calibration_notes: Optional[str] = None
-    road_test_notes: Optional[str] = None
-    next_recommendations: Optional[str] = None
-    warranty_or_retune_status: Optional[str] = None
-    odometer_at_visit: Optional[int] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class JobCreate(BaseModel):
-    vehicle_id: str
-    customer_id: str
-    date: str
-    technician_name: str
-    work_performed: Optional[str] = None
-    tune_stage: Optional[str] = None
-    mods_installed: Optional[str] = None
-    dyno_results: Optional[str] = None
-    before_ecu_map_version: Optional[str] = None
-    after_ecu_map_version: Optional[str] = None
-    calibration_notes: Optional[str] = None
-    road_test_notes: Optional[str] = None
-    next_recommendations: Optional[str] = None
-    warranty_or_retune_status: Optional[str] = None
-    odometer_at_visit: Optional[int] = None
-
-class TuneRevision(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    job_id: str
-    vehicle_id: str
-    revision_label: str
-    description: Optional[str] = None
-    base_file_reference: Optional[str] = None
-    diff_notes: Optional[str] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class TuneRevisionCreate(BaseModel):
-    job_id: str
-    vehicle_id: str
-    revision_label: str
-    description: Optional[str] = None
-    diff_notes: Optional[str] = None
-
-class Billing(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    job_id: str
-    quoted_amount: float
-    final_billed_amount: float
-    payment_method: str
-    payment_status: str  # paid, pending, partial
-    gst_invoice_number: Optional[str] = None
-    discounts: Optional[float] = None
-    refunds: Optional[float] = None
-    notes: Optional[str] = None
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class BillingCreate(BaseModel):
-    job_id: str
-    quoted_amount: float
-    final_billed_amount: float
-    payment_method: str
-    payment_status: str
-    gst_invoice_number: Optional[str] = None
-    discounts: Optional[float] = None
-    refunds: Optional[float] = None
-    notes: Optional[str] = None
-
-class Reminder(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    vehicle_id: str
-    customer_id: str
-    job_id: Optional[str] = None
-    reminder_type: str  # follow_up, service, retune
-    reminder_date: str
-    message: str
-    status: str = "pending"  # pending, completed, cancelled
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class ReminderCreate(BaseModel):
-    vehicle_id: str
-    customer_id: str
-    job_id: Optional[str] = None
-    reminder_type: str
-    reminder_date: str
-    message: str
-
-class Appointment(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    customer_id: str
-    vehicle_id: str
-    appointment_date: str
-    appointment_time: str
-    service_type: str
-    notes: Optional[str] = None
-    status: str = "scheduled"  # scheduled, confirmed, completed, cancelled
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-
-class AppointmentCreate(BaseModel):
-    customer_id: str
-    vehicle_id: str
-    appointment_date: str
-    appointment_time: str
-    service_type: str
-    notes: Optional[str] = None
-    status: str = "scheduled"
-
-class StatusUpdate(BaseModel):
-    status: str
-
-class DashboardStats(BaseModel):
-    jobs_this_week: int
-    pending_payments: int
-    upcoming_reminders: int
-    total_customers: int
-    total_vehicles: int
-    recent_jobs: List[dict]
+# Custom dependency wrapper for get_current_user that includes db
+async def get_current_user_with_db(credentials = Depends(security)):
+    """Dependency to get current user with database access."""
+    from utils.auth import get_current_user
+    return await get_current_user(credentials, db=db)
 
 # ==================== INITIALIZE DEFAULT ADMIN ====================
 @app.on_event("startup")
