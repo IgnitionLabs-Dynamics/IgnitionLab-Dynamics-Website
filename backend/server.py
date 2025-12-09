@@ -622,6 +622,25 @@ async def get_tune_revisions(vehicle_id: Optional[str] = None, job_id: Optional[
     revisions = await db.tune_revisions.find(query, {"_id": 0}).sort("created_at", 1).to_list(1000)
     return revisions
 
+@api_router.put("/tune-revisions/{revision_id}", response_model=TuneRevision)
+async def update_tune_revision(revision_id: str, revision_update: TuneRevisionCreate, current_user: dict = Depends(get_current_user)):
+    update_data = {
+        "revision_label": revision_update.revision_label,
+        "description": revision_update.description,
+        "diff_notes": revision_update.diff_notes,
+    }
+    
+    result = await db.tune_revisions.update_one(
+        {"id": revision_id},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Tune revision not found")
+    
+    revision = await db.tune_revisions.find_one({"id": revision_id}, {"_id": 0})
+    return revision
+
 # ==================== BILLING ROUTES ====================
 
 @api_router.post("/billing", response_model=Billing)
