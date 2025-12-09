@@ -59,11 +59,12 @@ export default function Dashboard() {
   };
 
   const getIncomeLabel = () => {
+    const now = new Date();
     switch (incomePeriod) {
       case 'weekly':
-        return 'Weekly Income';
+        return `This Week (${now.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })})`;
       case 'monthly':
-        return 'Monthly Income';
+        return `${now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`;
       case 'all_time':
         return 'All-Time Income';
       default:
