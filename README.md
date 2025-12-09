@@ -251,8 +251,9 @@ tail -f /var/log/supervisor/frontend.err.log
    - Hover effects and visual indicators for better UX
    - Direct access to full job history and vehicle information
 
-6. **Revenue Overview Dashboard Card**:
+6. **Revenue Overview Dashboard Card** (Admin Only):
    - New interactive income statistics card showing financial overview
+   - **Role-based access control**: Only visible to users with 'admin' role
    - Toggle between three calendar-based periods:
      * **This Week**: Current calendar week (Monday-Sunday)
      * **This Month**: Current calendar month (1st to end of month)
@@ -261,6 +262,7 @@ tail -f /var/log/supervisor/frontend.err.log
    - Shows current period context (e.g., "December 2025", "This Week (9 Dec)")
    - Real-time calculations based on paid invoices from billing records
    - Color-coded with emerald theme for positive financial metrics
+   - Technicians and other non-admin users cannot view revenue data
 
 7. **Live Date & Time Display**:
    - Real-time clock in header showing current date and time
