@@ -100,6 +100,20 @@ export default function Login() {
               />
             </div>
 
+            <div className="flex items-center space-x-2">
+              <input
+                id="rememberMe"
+                data-testid="login-remember-me-checkbox"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 bg-zinc-900/50 border-zinc-800 rounded focus:ring-amber-500 focus:ring-2 text-amber-500"
+              />
+              <Label htmlFor="rememberMe" className="text-zinc-400 text-sm cursor-pointer">
+                Remember me for 30 days
+              </Label>
+            </div>
+
             <Button
               type="submit"
               data-testid="login-submit-button"
