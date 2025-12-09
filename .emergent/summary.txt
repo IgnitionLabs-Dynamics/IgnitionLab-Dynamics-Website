@@ -15,23 +15,19 @@ Build a secure, production-ready, web-based internal app for **IgnitionLab Dynam
 **User's preferred language**: English
 
 **what currently exists?**
-A comprehensive full-stack application for IgnitionLab Dynamics is fully functional. It includes a secure JWT-based authentication system with user management. Full CRUD operations are supported for Customers, Vehicles, Jobs, Tune Revisions, and Appointments.
+The application is in a clean, reset state. Per the user's request, the Remember Me feature, which was previously implemented, has been completely removed from the codebase. All business-related data (customers, vehicles, jobs, etc.) has been wiped from the database.
 
-Key features and recent changes include:
-- A professional dark-themed, responsive UI.
-- A functional dashboard with interactive widgets for Jobs this week and Pending payments that link to filtered views.
-- A user profile page for changing username and password.
-- Enhanced global search that includes  and , displaying results on a dedicated page instead of navigating to the first match.
-- The 17-character limit on the VIN field has been removed.
-- Customer details can now be edited from the customer detail page.
-- The monolithic FastAPI backend has been refactored into a modular structure with separate directories for routes, models, and utilities, improving maintainability.
-- Deployment-related bugs, including a  version incompatibility and missing health check endpoints, have been resolved.
+The application's state is as follows:
+- The database contains only a single default user.
+- The default login credentials have been changed to  / .
+- All other features, including the modular backend structure, CRUD operations, profile page, and enhanced search, remain intact but operate on an empty dataset.
+- The  file has been updated to reflect the new credentials.
 
 **Last working item**:
-    - Last item agent was working: Implementing the ability for users to edit customer details after creation. An Edit Details button was added to the  page, which opens a modal pre-filled with the customer's current information. The corresponding backend  endpoint was also implemented.
+    - Last item agent was working: Wiping all data from the database collections (users, customers, vehicles, jobs, etc.) and re-initializing the application with a single, new default admin user (/).
     - Status: USER VERIFICATION PENDING
     - Agent Testing Done: Y
-    - Which testing method agent to use? The functionality was tested by the agent using the screenshot tool, which confirmed the UI, data pre-population, update submission, and success notification. The user should verify the changes manually.
+    - Which testing method agent to use? The user should manually test by logging in with the new credentials and verifying that the dashboard is empty and the application is in a fresh state.
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
@@ -39,13 +35,13 @@ Key features and recent changes include:
 
   Issues Detail:
   - Issue 1: 
-     - **Description:** After the agent implemented the password change functionality on the new Profile page, the user reported that they could not log in with their new password, although the old one still worked.
-     - **Attempted fixes:** The agent conducted a thorough backend investigation. It successfully changed a user's password to a new one, logged in with the new password, changed it back to the original, and logged in again with the original password. All steps worked perfectly. The agent concluded the backend functionality is correct and the issue might be on the user's side (e.g., browser autofill interfering, or a typing error).
+     - **Description:** After the password change functionality was implemented, a user reported that they could not log in with their new password, although the old one still worked. This issue was reported before the database was wiped and credentials were reset.
+     - **Attempted fixes:** The previous agent performed extensive backend testing and confirmed the password update and authentication logic was working correctly. The conclusion was that the issue was likely client-side (e.g., browser autofill, cache).
      - **Next debug checklist:**
-        1.  Ask the user to re-verify, ensuring they are not using a password manager or browser autofill.
-        2.  If the issue persists, ask the user to check the browser's developer console for any errors during the login attempt.
-        3.  Guide the user through testing the password change in an incognito/private browser window to rule out caching or extension issues.
-     - **Why fix this issue and what will be achieved with the fix?** This is a critical user-facing issue. Resolving it will ensure the profile management feature is fully functional and trustworthy.
+        1.  Ask the user to try changing the password for the new  user and see if the issue persists on a clean account.
+        2.  Guide the user to test in an incognito/private browser window to rule out caching or extension issues.
+        3.  If it still fails, ask the user for specific error messages from the browser's developer console.
+     - **Why fix this issue and what will be achieved with the fix?** This is a critical security and usability feature. Resolving it ensures profile management is fully functional.
      - **Status:** USER VERIFICATION PENDING
      - **Is recurring issue?** N
      - **Should Test frontend/backend/both after fix?** Frontend (manual verification by user)
@@ -63,18 +59,14 @@ Future Tasks:
 - **(P2) VIN Auto-decoding:** Integrate an external API to auto-fill vehicle details from the VIN.
 - **(P2) Full WhatsApp Integration:** Replace the current copy message button with a direct WhatsApp API integration.
 - **(P2) Cloud Storage for Files:** Migrate from local file references to a cloud storage solution like S3 for tune files and documents.
-- **(P3) Create Seed Data:** Add more example records to better demonstrate app functionality to a new user.
+- **(P3) Create Seed Data:** Add example records to better demonstrate app functionality to a new user.
 
 **Completed work in this session**
-- **Dashboard Widget Links Fixed:** Created a new  page and updated dashboard widgets to link to correctly filtered views for Jobs this week and Pending payments.
-- **Backend Refactoring:** Refactored the monolithic  into a scalable, modular structure with , , and  directories.
-- **Profile Page Created:** Added a user profile page allowing users to change their username and password.
-- **UI/UX Cleanup:** Removed the New Job button from the main header and the Register here link from the Login page.
-- **Enhanced Search:** Improved the global search to query by  and  and created a  page to display all matches.
-- **Deployment Issues Resolved:** Fixed a  dependency conflict by pinning the version to  and added  and  endpoints for production environments.
-- **VIN Character Limit Removed:** Removed the  restriction from the VIN input fields in both the Add Vehicle and Edit Vehicle forms.
-- **Editable Customer Details:** Implemented functionality to edit customer information via a modal on the  page.
-- **Documentation:** Created  and updated  to reflect the new backend structure.
+- **Database Wipe:** All user, customer, vehicle, and job data was completely removed from the MongoDB database, resetting the application to a clean slate.
+- **Default Credentials Changed:** The initial admin user was changed from  to  with the password .
+- **Remember Me Feature Reverted:** A fully implemented Remember Me feature, including backend logic, frontend UI, mobile-specific fixes, and documentation, was completely removed from the codebase at the user's request.
+- **Code Cleanup:** All files related to the Remember Me feature, including a new diagnostics page and multiple markdown documents, were deleted.
+- **README Update:** The  file was updated to reflect the new default credentials.
 
 **Earlier issues found/mentioned but not fixed**
 - None.
@@ -86,69 +78,63 @@ Future Tasks:
 
 
 **Key Technical Concepts**
-- **Backend:** FastAPI (refactored to use APIRouters for modularity)
+- **Backend:** FastAPI (using APIRouters)
 - **Frontend:** React (Create React App)
 - **Database:** MongoDB
-- **Authentication:** JWT,  with  for password hashing.
+- **Authentication:** JWT,  with 
 - **Styling:** Tailwind CSS
 
 **key DB schema**
   - **users:** {username, hashed_password, role, created_at}
   - **customers:** {full_name, phone_number, email, address, etc.}
-  - **vehicles:** {customer_id, make, model, variant, engine_code, ecu_type, vin, registration_number, etc.}
-  - **jobs:** {vehicle_id, customer_id, date, technician_name, work_performed, tune_stage, billing_details, etc.}
-  - **tune_revisions:** {job_id, vehicle_id, revision_label, description, technical_notes, etc.}
+  - **vehicles:** {customer_id, make, model, variant, engine_code, ecu_type, vin, etc.}
+  - **jobs:** {vehicle_id, customer_id, date, work_performed, billing_details, etc.}
+  - **tune_revisions:** {job_id, vehicle_id, revision_label, description, etc.}
   - **appointments:** {customer_name, vehicle_details, service_required, appointment_date, status}
+  _Note: All collections except  are currently empty._
 
 **changes in tech stack**
-  - The  library version was pinned to  in  to resolve a compatibility issue with  that caused deployment failures.
+- None.
 
 **All files of reference**
-- **New Files Created:**
-  - : Displays a filtered list of jobs based on URL query params.
-  - : Provides UI for users to update their username and password.
-  - : Displays results from the global search.
-  - : Directory containing Pydantic models.
-  - : Directory containing FastAPI routers.
-  - : Directory for utility functions like authentication helpers.
-  - : Document outlining fixes for deployment.
 - **Key Files Modified:**
-  - : Major refactor to import and include modular routers.
-  - : Pinned .
-  - : Search logic updated to navigate to the results page; New Job button removed and Profile link added.
-  - : Added Edit Details button and modal logic.
-  -  & : Removed  on VIN input.
-  - : Added routes for new pages (, , ).
-
-**Areas that need refactoring**:
-- The  component remains very large and manages significant state. It could be broken down into smaller, more focused sub-components (e.g., , , ) to improve maintainability.
-
-**key api endpoints**
-- : New health check endpoint.
-- : New readiness check endpoint.
-- : New  endpoint to update the current user's username.
-- : New  endpoint to update the current user's password.
-- : Modified to search  and  and return all matches.
-
-**Critical Info for New Agent**
-- **Backend Refactor:** The backend is no longer a monolithic  file. All new backend code should follow the modular structure in the , , and  directories.
-- **Password Change Issue:** A user reported being unable to log in with a new password. Extensive backend testing showed the functionality is working correctly. The next agent should be prepared to help the user troubleshoot potential client-side issues (browser cache, autofill) if the problem persists.
-- **Deployment Fixes:** Critical deployment issues related to  and health checks have been resolved. Do not change the  version from .
-
-**documents created in this job**
+  - : Default user credentials updated. Login logic was modified and then reverted.
+  - :  model was modified and then reverted.
+  - : Remember Me UI was added and then removed.
+  - : Login and token verification logic was modified and then reverted to its original state.
+  - : A route for a diagnostics page was added and then removed.
+  - : Updated to reflect new default credentials.
+- **Files Created & Deleted:**
+  - 
+  - 
+  - 
   - 
 
+**Areas that need refactoring**:
+- **:** The  component is large and could be broken down into smaller sub-components for better maintainability.
+- **Backend Routes:** Although the backend was refactored to be modular, some core routes like  still reside in the main  file instead of being moved to a dedicated router (e.g., ).
+
+**key api endpoints**
+- : Authenticates the user and returns a JWT.
+- :  endpoint to update the current user's password. (Subject of the pending issue).
+- :  endpoint to list users.
+
+**Critical Info for New Agent**
+- **Application State:** The app has been intentionally reset. All data is gone, and the login is now /. Do not be surprised by the empty dashboard.
+- **Remember Me Feature:** This feature was explicitly rejected by the user after full implementation. Do not re-introduce it or any related concepts unless specifically requested again.
+- **Password Change Bug:** The highest priority issue is investigating the user's problem with password changes. Since the database has been reset, the first step should be to have the user try to reproduce the issue with the new  account.
+
+**documents created in this job**
+- None remain. All documentation created for the Remember Me feature was deleted as part of the cleanup.
+
 **Last 10 User Messages and any pending user messages**
-1.  **User:** Remove register here from login, move profile button. (COMPLETED)
-2.  **User:** Password change worked, but can't log in with the new password. (IN PROGRESS - under user verification)
-3.  **User:** Add search by engine code, ECU type. (COMPLETED)
-4.  **User:** When searching, show a list of matches, not just the first one. (COMPLETED)
-5.  **User:** Provided deployment error logs. (COMPLETED - agent fixed them)
-6.  **User:** Remove the 17-character limit on the VIN field. (COMPLETED)
-7.  **User:** Make customer details editable. (COMPLETED - now the last working item)
+1.  **User:** Add a remember me option to the login page. (IMPLEMENTED & REVERTED)
+2.  **User:** On mobile, I'm logged out after closing the browser even with remember me checked. (BUG REPORTED, FIXED & REVERTED)
+3.  **User:** Change default credentials to /, scrap the remember me feature, and clean up. (COMPLETED)
+4.  **User:** Remove all user, customer, and vehicle data from the database. (COMPLETED)
 
 **Project Health Check:**
-- **Working:** The application is fully functional. All features implemented in this session, including backend refactoring, search enhancements, and deployment fixes, have been tested and are working correctly.
+- **Working:** The application is fully functional and in a clean, reset state.
 - **Broken:** None.
 - **Mocked:** The WhatsApp integration remains a Copy Message button.
 
@@ -156,7 +142,7 @@ Future Tasks:
 - None implemented.
 
 **Testing status**
-  - Testing agent used after significant changes: NO (Agent used screenshot tool and manual / scripts extensively for testing).
+  - Testing agent used after significant changes: NO
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: []
   - Known regressions: None.
@@ -166,4 +152,4 @@ Future Tasks:
 - **Password:** 
 
 **What agent forgot to execute**
-- The agent successfully addressed all user requests and completed several major tasks from the backlog (refactoring, fixing dashboard links). No requested items were forgotten. The remaining Upcoming and Future tasks are part of the long-term product roadmap.</analysis>
+- The agent successfully executed all user requests in this session, including the complete reversal of a major feature. No tasks were forgotten.</analysis>
