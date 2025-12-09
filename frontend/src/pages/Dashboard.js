@@ -11,7 +11,8 @@ import {
   Users,
   Car,
   ArrowRight,
-  TrendingUp
+  TrendingUp,
+  DollarSign
 } from 'lucide-react';
 
 export default function Dashboard() {
