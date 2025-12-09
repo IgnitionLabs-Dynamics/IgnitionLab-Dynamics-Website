@@ -1324,7 +1324,6 @@ export default function VehicleDetail() {
                   value={vehicleFormData.vin}
                   onChange={(e) => setVehicleFormData({ ...vehicleFormData, vin: e.target.value.toUpperCase() })}
                   className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
-                  maxLength={17}
                   required
                 />
               </div>
