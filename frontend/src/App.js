@@ -15,6 +15,7 @@ import Reminders from './pages/Reminders';
 import UserManagement from './pages/UserManagement';
 import Appointments from './pages/Appointments';
 import Profile from './pages/Profile';
+import SearchResults from './pages/SearchResults';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
