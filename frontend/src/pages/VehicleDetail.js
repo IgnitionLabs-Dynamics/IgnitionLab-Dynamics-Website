@@ -778,16 +778,28 @@ export default function VehicleDetail() {
                               )}
                             </div>
                           </div>
-                          <Button
-                            onClick={() => handleCopyWhatsAppMessage(job)}
-                            data-testid="copy-whatsapp-message-button"
-                            variant="outline"
-                            size="sm"
-                            className="border-green-500/30 text-green-500 hover:bg-green-500/10"
-                          >
-                            <MessageCircle className="w-4 h-4 mr-2" />
-                            Copy WhatsApp
-                          </Button>
+                          <div className="flex space-x-2">
+                            <Button
+                              onClick={() => handleEditJob(job)}
+                              data-testid="edit-job-button"
+                              variant="outline"
+                              size="sm"
+                              className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
+                            >
+                              <Edit className="w-4 h-4 mr-2" />
+                              Edit
+                            </Button>
+                            <Button
+                              onClick={() => handleCopyWhatsAppMessage(job)}
+                              data-testid="copy-whatsapp-message-button"
+                              variant="outline"
+                              size="sm"
+                              className="border-green-500/30 text-green-500 hover:bg-green-500/10"
+                            >
+                              <MessageCircle className="w-4 h-4 mr-2" />
+                              Copy WhatsApp
+                            </Button>
+                          </div>
                         </div>
 
                         <Separator className="bg-zinc-800" />
