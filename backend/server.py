@@ -685,11 +685,12 @@ async def global_search(query: str, current_user: dict = Depends(get_current_use
         {
             "$or": [
                 {"full_name": {"$regex": query, "$options": "i"}},
-                {"phone_number": {"$regex": query, "$options": "i"}}
+                {"phone_number": {"$regex": query, "$options": "i"}},
+                {"email": {"$regex": query, "$options": "i"}}
             ]
         },
         {"_id": 0}
-    ).limit(5).to_list(5)
+    ).to_list(100)
     
     vehicles = await db.vehicles.find(
         {
@@ -697,15 +698,18 @@ async def global_search(query: str, current_user: dict = Depends(get_current_use
                 {"registration_number": {"$regex": query, "$options": "i"}},
                 {"vin": {"$regex": query, "$options": "i"}},
                 {"make": {"$regex": query, "$options": "i"}},
-                {"model": {"$regex": query, "$options": "i"}}
+                {"model": {"$regex": query, "$options": "i"}},
+                {"engine_code": {"$regex": query, "$options": "i"}},
+                {"ecu_type": {"$regex": query, "$options": "i"}}
             ]
         },
         {"_id": 0}
-    ).limit(5).to_list(5)
+    ).to_list(100)
     
     return {
         "customers": customers,
-        "vehicles": vehicles
+        "vehicles": vehicles,
+        "total_results": len(customers) + len(vehicles)
     }
 
 # Include the router in the main app
