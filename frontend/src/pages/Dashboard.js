@@ -173,10 +173,13 @@ export default function Dashboard() {
         {/* Income Card with Period Toggle */}
         <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6">
           <div className="flex items-start justify-between mb-4">
-            <div>
+            <div className="flex-1">
               <p className="text-sm text-zinc-400 mb-1">Revenue Overview</p>
-              <p className="text-3xl font-bold text-emerald-500">
+              <p className="text-3xl font-bold text-emerald-500 mb-1">
                 {formatCurrency(getIncomeValue())}
+              </p>
+              <p className="text-xs text-amber-500 font-medium">
+                {getIncomeLabel()}
               </p>
             </div>
             <div className="p-3 rounded-sm bg-emerald-500/10 border-emerald-500/20 border">
@@ -194,7 +197,7 @@ export default function Dashboard() {
                   : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
               }`}
             >
-              Weekly
+              This Week
               <span className="block text-xs mt-0.5 opacity-75">
                 {formatCurrency(stats?.weekly_income || 0)}
               </span>
@@ -207,7 +210,7 @@ export default function Dashboard() {
                   : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
               }`}
             >
-              Monthly
+              This Month
               <span className="block text-xs mt-0.5 opacity-75">
                 {formatCurrency(stats?.monthly_income || 0)}
               </span>
@@ -228,7 +231,7 @@ export default function Dashboard() {
           </div>
           
           <p className="text-xs text-zinc-500 mt-3 text-center">
-            Based on paid invoices only
+            Based on paid invoices • Calendar weeks start Monday
           </p>
         </Card>
 
