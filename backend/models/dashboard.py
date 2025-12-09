@@ -7,4 +7,7 @@ class DashboardStats(BaseModel):
     upcoming_reminders: int
     total_customers: int
     total_vehicles: int
+    weekly_income: float
+    monthly_income: float
+    all_time_income: float
     recent_jobs: List[dict]
