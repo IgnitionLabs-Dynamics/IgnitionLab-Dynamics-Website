@@ -744,7 +744,7 @@ export default function VehicleDetail() {
                     >
                       <div className="space-y-4">
                         {/* Job Header */}
-                        <div className="flex items-start justify-between">
+                        <div className="flex items-start justify-between mb-4">
                           <div>
                             <div className="flex items-center space-x-3 mb-2">
                               <span className="font-mono text-sm text-zinc-400">
