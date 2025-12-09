@@ -31,11 +31,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (username, password) => {
+  const login = async (username, password, rememberMe = false) => {
     try {
       const response = await axios.post(`${API_URL}/api/auth/login`, {
         username,
         password,
+        remember_me: rememberMe,
       });
       const { access_token, username: userName, role } = response.data;
       localStorage.setItem('token', access_token);
