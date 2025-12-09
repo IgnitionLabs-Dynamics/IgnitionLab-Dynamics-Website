@@ -10,12 +10,14 @@ A comprehensive, production-ready web application for managing vehicle servicing
 - **Job Management**: Track all tuning jobs, services, and modifications
 - **Tune Revisions**: Version control for tune files and calibration changes
 - **Billing & Payments**: Invoice tracking with payment status monitoring
-- **Dashboard Analytics**: Real-time stats and insights
+- **Dashboard Analytics**: Real-time stats and insights with clickable navigation
+- **Revenue Overview**: Track weekly, monthly, and all-time income from paid invoices
 - **Filtered Views**: Quick access to jobs this week and pending payments
 - **Appointments & Reminders**: Schedule management system
 - **User Profile Management**: Change username and password
 - **Enhanced Search**: Search by customer, phone, VIN, registration, engine code, and ECU type
 - **Editable Customer Details**: Modify customer information directly from detail pages
+- **Interactive Dashboard Cards**: Click-through navigation from dashboard widgets
 
 ## 🏗️ Tech Stack
 
