@@ -71,6 +71,21 @@ export default function Customers() {
     }
   };
 
+  const handleDeleteCustomer = async (customerId, customerName) => {
+    if (!window.confirm(`Are you sure you want to delete customer "${customerName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/customers/${customerId}`);
+      toast.success('Customer deleted successfully');
+      fetchCustomers();
+    } catch (error) {
+      console.error('Failed to delete customer:', error);
+      toast.error(error.response?.data?.detail || 'Failed to delete customer');
+    }
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
