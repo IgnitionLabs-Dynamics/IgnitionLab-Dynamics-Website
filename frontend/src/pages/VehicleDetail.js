@@ -27,7 +27,8 @@ import {
   User,
   Download,
   Plus,
-  Edit
+  Edit,
+  Trash2
 } from 'lucide-react';
 
 export default function VehicleDetail() {
