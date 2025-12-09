@@ -191,7 +191,8 @@ tail -f /var/log/supervisor/frontend.err.log
 - Dark theme optimized for professional use
 - Responsive design (mobile-friendly)
 - Interactive dashboard widgets with click-through navigation
-- Revenue overview card with period toggling (Weekly/Monthly/All-Time)
+- Revenue overview card with calendar-based period toggling (This Week/This Month/All-Time)
+- Live date and time display in header (updates every second)
 - Clickable recent job cards that navigate to vehicle details
 - Real-time toast notifications
 - QR code generation for vehicle records
@@ -200,6 +201,7 @@ tail -f /var/log/supervisor/frontend.err.log
 - Global search bar in header
 - Profile menu in header navigation
 - Hover states and visual feedback on interactive elements
+- Calendar-aware calculations (weeks start Monday, months follow calendar)
 
 ## 📝 Code Architecture Highlights
 
