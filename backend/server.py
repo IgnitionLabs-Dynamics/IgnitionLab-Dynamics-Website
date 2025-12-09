@@ -120,21 +120,6 @@ async def register(user_login: UserLogin):
 
 # ==================== USER MANAGEMENT ROUTES (ADMIN ONLY) ====================
 
-class UserCreate(BaseModel):
-    username: str
-    password: str
-    role: str = "technician"
-
-class RoleUpdate(BaseModel):
-    role: str
-
-class UserResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    username: str
-    role: str
-    created_at: str
-
 @api_router.get("/users", response_model=List[UserResponse])
 async def get_users(current_user: dict = Depends(get_current_user_with_db)):
     if current_user["role"] != "admin":
