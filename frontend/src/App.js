@@ -129,6 +129,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/search"
+        element={
+          <ProtectedRoute>
+            <SearchResults />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
