@@ -265,8 +265,21 @@ export default function Customers() {
                 {customer.notes && (
                   <p className="mt-3 text-xs text-zinc-500 truncate">{customer.notes}</p>
                 )}
-              </Card>
-            </Link>
+              </Link>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDeleteCustomer(customer.id, customer.full_name);
+                }}
+                data-testid="delete-customer-button"
+                variant="outline"
+                size="sm"
+                className="absolute bottom-4 right-4 border-red-500/30 text-red-500 hover:bg-red-500/10"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </Card>
           ))}
         </div>
 
