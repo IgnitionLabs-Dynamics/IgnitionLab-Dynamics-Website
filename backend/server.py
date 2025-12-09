@@ -657,6 +657,19 @@ async def update_job(job_id: str, job_update: JobCreate, current_user: dict = De
     job = await db.jobs.find_one({"id": job_id}, {"_id": 0})
     return job
 
+@api_router.delete("/jobs/{job_id}")
+async def delete_job(job_id: str, current_user: dict = Depends(get_current_user)):
+    # Delete associated tune revisions and billing
+    await db.tune_revisions.delete_many({"job_id": job_id})
+    await db.billing.delete_many({"job_id": job_id})
+    
+    result = await db.jobs.delete_one({"id": job_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    return {"message": "Job deleted successfully"}
+
 # ==================== TUNE REVISION ROUTES ====================
 
 @api_router.post("/tune-revisions", response_model=TuneRevision)
