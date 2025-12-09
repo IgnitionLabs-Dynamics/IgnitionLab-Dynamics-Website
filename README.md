@@ -173,7 +173,7 @@ tail -f /var/log/supervisor/frontend.err.log
 ## 📱 Frontend Pages
 
 - **Login**: Secure authentication with clean UI
-- **Dashboard**: Overview with stats and quick access widgets
+- **Dashboard**: Overview with stats, revenue tracking, and quick access widgets with click-through navigation
 - **Jobs**: Filtered views (This Week, Pending Payments, All)
 - **Customers**: Customer database management with editable details
 - **Customer Detail**: View and edit customer information
