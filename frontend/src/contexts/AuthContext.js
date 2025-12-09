@@ -78,13 +78,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password, rememberMe = false) => {
     try {
+      console.log('Logging in, remember me:', rememberMe);
       const response = await axios.post(`${API_URL}/api/auth/login`, {
         username,
         password,
         remember_me: rememberMe,
       });
       const { access_token, username: userName, role } = response.data;
-      localStorage.setItem('token', access_token);
+      
+      // Store token
+      const stored = setStoredToken(access_token);
+      console.log('Token stored successfully:', stored);
+      
       setToken(access_token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       setUser({ username: userName, role });
@@ -96,7 +101,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    console.log('Logging out, clearing token');
+    removeStoredToken();
     setToken(null);
     setUser(null);
     delete axios.defaults.headers.common['Authorization'];
