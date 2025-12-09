@@ -585,6 +585,13 @@ async def update_job(job_id: str, job_update: JobCreate, current_user: dict = De
     update_data = job_update.model_dump()
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
+    # Update vehicle's odometer if provided
+    if job_update.odometer_at_visit:
+        await db.vehicles.update_one(
+            {"id": job_update.vehicle_id},
+            {"$set": {"odometer_at_last_visit": job_update.odometer_at_visit}}
+        )
+    
     result = await db.jobs.update_one(
         {"id": job_id},
         {"$set": update_data}
