@@ -887,6 +887,214 @@ export default function VehicleDetail() {
           </div>
         </div>
       </div>
+
+      {/* Edit Job Dialog */}
+      <Dialog open={editJobDialogOpen} onOpenChange={(open) => {
+        setEditJobDialogOpen(open);
+        if (!open) {
+          setEditingJob(null);
+          setJobFormData({
+            date: '',
+            technician_name: '',
+            work_performed: '',
+            tune_stage: '',
+            mods_installed: '',
+            dyno_results: '',
+            before_ecu_map_version: '',
+            after_ecu_map_version: '',
+            calibration_notes: '',
+            road_test_notes: '',
+            next_recommendations: '',
+            warranty_or_retune_status: '',
+            odometer_at_visit: '',
+          });
+        }
+      }}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-2xl font-bold text-white">
+              Edit Job
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateJob} className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit_date" className="text-zinc-300">
+                  Date <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_date"
+                  type="date"
+                  value={jobFormData.date}
+                  onChange={(e) => setJobFormData({ ...jobFormData, date: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_technician" className="text-zinc-300">
+                  Technician <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_technician"
+                  value={jobFormData.technician_name}
+                  onChange={(e) => setJobFormData({ ...jobFormData, technician_name: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_tune_stage" className="text-zinc-300">
+                  Tune Stage
+                </Label>
+                <Input
+                  id="edit_tune_stage"
+                  value={jobFormData.tune_stage}
+                  onChange={(e) => setJobFormData({ ...jobFormData, tune_stage: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_odometer" className="text-zinc-300">
+                  Odometer (km)
+                </Label>
+                <Input
+                  id="edit_odometer"
+                  type="number"
+                  value={jobFormData.odometer_at_visit}
+                  onChange={(e) => setJobFormData({ ...jobFormData, odometer_at_visit: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <Label htmlFor="edit_work_performed" className="text-zinc-300">
+                  Work Performed
+                </Label>
+                <Textarea
+                  id="edit_work_performed"
+                  value={jobFormData.work_performed}
+                  onChange={(e) => setJobFormData({ ...jobFormData, work_performed: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_mods" className="text-zinc-300">
+                  Mods Installed
+                </Label>
+                <Textarea
+                  id="edit_mods"
+                  value={jobFormData.mods_installed}
+                  onChange={(e) => setJobFormData({ ...jobFormData, mods_installed: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  rows={2}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_dyno" className="text-zinc-300">
+                  Dyno Results
+                </Label>
+                <Textarea
+                  id="edit_dyno"
+                  value={jobFormData.dyno_results}
+                  onChange={(e) => setJobFormData({ ...jobFormData, dyno_results: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                  rows={2}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_before_map" className="text-zinc-300">
+                  Before ECU Map
+                </Label>
+                <Input
+                  id="edit_before_map"
+                  value={jobFormData.before_ecu_map_version}
+                  onChange={(e) => setJobFormData({ ...jobFormData, before_ecu_map_version: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_after_map" className="text-zinc-300">
+                  After ECU Map
+                </Label>
+                <Input
+                  id="edit_after_map"
+                  value={jobFormData.after_ecu_map_version}
+                  onChange={(e) => setJobFormData({ ...jobFormData, after_ecu_map_version: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <Label htmlFor="edit_calibration" className="text-zinc-300">
+                  Calibration Notes
+                </Label>
+                <Textarea
+                  id="edit_calibration"
+                  value={jobFormData.calibration_notes}
+                  onChange={(e) => setJobFormData({ ...jobFormData, calibration_notes: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  rows={2}
+                />
+              </div>
+
+              <div className="col-span-2">
+                <Label htmlFor="edit_road_test" className="text-zinc-300">
+                  Road Test Notes
+                </Label>
+                <Textarea
+                  id="edit_road_test"
+                  value={jobFormData.road_test_notes}
+                  onChange={(e) => setJobFormData({ ...jobFormData, road_test_notes: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  rows={2}
+                />
+              </div>
+
+              <div className="col-span-2">
+                <Label htmlFor="edit_recommendations" className="text-zinc-300">
+                  Next Recommendations
+                </Label>
+                <Textarea
+                  id="edit_recommendations"
+                  value={jobFormData.next_recommendations}
+                  onChange={(e) => setJobFormData({ ...jobFormData, next_recommendations: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  rows={2}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_warranty" className="text-zinc-300">
+                  Warranty/Retune Status
+                </Label>
+                <Input
+                  id="edit_warranty"
+                  value={jobFormData.warranty_or_retune_status}
+                  onChange={(e) => setJobFormData({ ...jobFormData, warranty_or_retune_status: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              data-testid="update-job-button"
+              className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow"
+            >
+              Update Job
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
