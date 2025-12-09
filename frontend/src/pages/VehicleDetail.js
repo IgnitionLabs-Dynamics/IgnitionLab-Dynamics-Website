@@ -753,15 +753,26 @@ export default function VehicleDetail() {
                           )}
                           <p className="text-xs text-zinc-600 mt-2">{formatDate(revision.created_at)}</p>
                         </div>
-                        <Button
-                          onClick={() => handleEditRevision(revision)}
-                          data-testid="edit-revision-button"
-                          variant="outline"
-                          size="sm"
-                          className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
+                        <div className="flex space-x-2">
+                          <Button
+                            onClick={() => handleEditRevision(revision)}
+                            data-testid="edit-revision-button"
+                            variant="outline"
+                            size="sm"
+                            className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            onClick={() => handleDeleteRevision(revision.id, revision.revision_label)}
+                            data-testid="delete-revision-button"
+                            variant="outline"
+                            size="sm"
+                            className="border-red-500/30 text-red-500 hover:bg-red-500/10"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </Card>
                   ))}
