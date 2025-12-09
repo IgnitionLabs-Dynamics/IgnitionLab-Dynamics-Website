@@ -16,7 +16,6 @@ import UserManagement from './pages/UserManagement';
 import Appointments from './pages/Appointments';
 import Profile from './pages/Profile';
 import SearchResults from './pages/SearchResults';
-import AuthDiagnostics from './pages/AuthDiagnostics';
 import './App.css';
 
 const ProtectedRoute = ({ children }) => {
