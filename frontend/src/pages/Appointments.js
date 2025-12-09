@@ -23,7 +23,7 @@ import {
 import api from '../lib/api';
 import { toast } from 'sonner';
 import { formatDate } from '../lib/utils';
-import { Calendar, Clock, Plus, User, Car, Check, X } from 'lucide-react';
+import { Calendar, Clock, Plus, User, Car, Check, X, Trash2 } from 'lucide-react';
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
