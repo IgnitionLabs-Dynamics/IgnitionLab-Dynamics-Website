@@ -493,6 +493,23 @@ async def search_customers(query: str, current_user: dict = Depends(get_current_
     ).to_list(100)
     return customers
 
+@api_router.delete("/customers/{customer_id}")
+async def delete_customer(customer_id: str, current_user: dict = Depends(get_current_user)):
+    # Check if customer has vehicles
+    vehicles = await db.vehicles.find({"customer_id": customer_id}).to_list(10)
+    if vehicles:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot delete customer. Please delete {len(vehicles)} associated vehicle(s) first."
+        )
+    
+    result = await db.customers.delete_one({"id": customer_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    return {"message": "Customer deleted successfully"}
+
 # ==================== VEHICLE ROUTES ====================
 
 @api_router.post("/vehicles", response_model=Vehicle)
