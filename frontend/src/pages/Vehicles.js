@@ -97,6 +97,21 @@ export default function Vehicles() {
     }
   };
 
+  const handleDeleteVehicle = async (vehicleId, vehicleName) => {
+    if (!window.confirm(`Are you sure you want to delete vehicle "${vehicleName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/vehicles/${vehicleId}`);
+      toast.success('Vehicle deleted successfully');
+      fetchData();
+    } catch (error) {
+      console.error('Failed to delete vehicle:', error);
+      toast.error(error.response?.data?.detail || 'Failed to delete vehicle');
+    }
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
