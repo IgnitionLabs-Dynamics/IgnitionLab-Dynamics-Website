@@ -578,6 +578,28 @@ async def search_vehicles(query: str, current_user: dict = Depends(get_current_u
     ).to_list(100)
     return vehicles
 
+@api_router.delete("/vehicles/{vehicle_id}")
+async def delete_vehicle(vehicle_id: str, current_user: dict = Depends(get_current_user)):
+    # Check if vehicle has jobs
+    jobs = await db.jobs.find({"vehicle_id": vehicle_id}).to_list(10)
+    if jobs:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot delete vehicle. Please delete {len(jobs)} associated job(s) first."
+        )
+    
+    # Delete associated tune revisions and reminders
+    await db.tune_revisions.delete_many({"vehicle_id": vehicle_id})
+    await db.reminders.delete_many({"vehicle_id": vehicle_id})
+    await db.appointments.delete_many({"vehicle_id": vehicle_id})
+    
+    result = await db.vehicles.delete_one({"id": vehicle_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    
+    return {"message": "Vehicle deleted successfully"}
+
 # ==================== JOB ROUTES ====================
 
 @api_router.post("/jobs", response_model=Job)
