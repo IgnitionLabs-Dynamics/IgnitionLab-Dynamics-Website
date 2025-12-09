@@ -237,11 +237,25 @@ tail -f /var/log/supervisor/frontend.err.log
    - "Pending Payments" shows jobs with pending/partial payment status
    - New `/jobs` page with smart filtering
 
-5. **UI/UX Improvements**:
+5. **Clickable Recent Jobs Navigation**:
+   - Recent job cards on dashboard are now clickable
+   - Clicking a job navigates to the corresponding vehicle detail page
+   - Hover effects and visual indicators for better UX
+   - Direct access to full job history and vehicle information
+
+6. **Revenue Overview Dashboard Card**:
+   - New interactive income statistics card showing financial overview
+   - Toggle between three time periods: Weekly, Monthly, and All-Time
+   - Displays actual amounts for each period with visual highlighting
+   - Real-time calculations based on paid invoices from billing records
+   - Color-coded with emerald theme for positive financial metrics
+
+7. **UI/UX Improvements**:
    - Removed "New Job" button from main header
    - Removed "Register here" link from login page
    - VIN field no longer has 17-character limit
    - Cleaner, more focused interface
+   - Enhanced card interactions with hover states
 
 ### Code Refactoring:
 1. **Backend Restructuring**:
