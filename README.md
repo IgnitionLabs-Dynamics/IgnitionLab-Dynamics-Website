@@ -150,7 +150,7 @@ tail -f /var/log/supervisor/frontend.err.log
 - `GET/POST /api/billing` - Billing records
 - `GET/POST /api/appointments` - Appointment scheduling
 - `GET/POST /api/reminders` - Reminder management
-- `GET /api/dashboard/stats` - Dashboard statistics
+- `GET /api/dashboard/stats` - Dashboard statistics (includes income analytics)
 - `GET /api/search?q=<query>` - Global search across customers, vehicles
 
 ### Health Checks
