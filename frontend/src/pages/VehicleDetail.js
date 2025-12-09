@@ -713,6 +713,15 @@ export default function VehicleDetail() {
                           )}
                           <p className="text-xs text-zinc-600 mt-2">{formatDate(revision.created_at)}</p>
                         </div>
+                        <Button
+                          onClick={() => handleEditRevision(revision)}
+                          data-testid="edit-revision-button"
+                          variant="outline"
+                          size="sm"
+                          className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
                       </div>
                     </Card>
                   ))}
