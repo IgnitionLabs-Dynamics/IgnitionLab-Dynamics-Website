@@ -625,15 +625,24 @@ async def delete_appointment(appointment_id: str, current_user: dict = Depends(g
 
 @api_router.get("/dashboard/stats", response_model=DashboardStats)
 async def get_dashboard_stats(current_user: dict = Depends(get_current_user_with_db)):
-    # Jobs this week
-    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
-    jobs_this_week = await db.jobs.count_documents({"date": {"$gte": week_ago}})
+    now = datetime.now(timezone.utc)
+    
+    # Calculate start of current calendar week (Monday)
+    start_of_week = (now - timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
+    week_start_iso = start_of_week.isoformat()
+    
+    # Calculate start of current calendar month
+    start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    month_start_iso = start_of_month.isoformat()
+    
+    # Jobs this week (calendar week)
+    jobs_this_week = await db.jobs.count_documents({"date": {"$gte": week_start_iso}})
     
     # Pending payments
     pending_payments = await db.billing.count_documents({"payment_status": {"$in": ["pending", "partial"]}})
     
     # Upcoming reminders
-    today = datetime.now(timezone.utc).isoformat()
+    today = now.isoformat()
     upcoming_reminders = await db.reminders.count_documents({
         "status": "pending",
         "reminder_date": {"$gte": today}
@@ -643,18 +652,17 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user_with
     total_customers = await db.customers.count_documents({})
     total_vehicles = await db.vehicles.count_documents({})
     
-    # Income calculations
-    # Weekly income
+    # Income calculations based on calendar periods
+    # Weekly income (current calendar week - Monday to Sunday)
     weekly_billing = await db.billing.find(
-        {"created_at": {"$gte": week_ago}, "payment_status": "paid"}, 
+        {"created_at": {"$gte": week_start_iso}, "payment_status": "paid"}, 
         {"_id": 0, "final_billed_amount": 1}
     ).to_list(1000)
     weekly_income = sum(bill.get("final_billed_amount", 0) for bill in weekly_billing)
     
-    # Monthly income
-    month_ago = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    # Monthly income (current calendar month)
     monthly_billing = await db.billing.find(
-        {"created_at": {"$gte": month_ago}, "payment_status": "paid"}, 
+        {"created_at": {"$gte": month_start_iso}, "payment_status": "paid"}, 
         {"_id": 0, "final_billed_amount": 1}
     ).to_list(1000)
     monthly_income = sum(bill.get("final_billed_amount", 0) for bill in monthly_billing)
