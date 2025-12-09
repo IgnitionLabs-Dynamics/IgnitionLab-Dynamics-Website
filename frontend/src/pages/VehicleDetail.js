@@ -218,6 +218,46 @@ export default function VehicleDetail() {
     }
   };
 
+  const handleDeleteJob = async (jobId, jobLabel) => {
+    if (!window.confirm(`Are you sure you want to delete Job ${jobLabel}? This will also delete associated tune revisions and billing records. This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/jobs/${jobId}`);
+      toast.success('Job deleted successfully');
+      
+      // Refresh jobs and tune revisions
+      const [jobsRes, revisionsRes] = await Promise.all([
+        api.get(`/jobs?vehicle_id=${vehicleId}`),
+        api.get(`/tune-revisions?vehicle_id=${vehicleId}`)
+      ]);
+      setJobs(jobsRes.data);
+      setTuneRevisions(revisionsRes.data);
+    } catch (error) {
+      console.error('Failed to delete job:', error);
+      toast.error('Failed to delete job');
+    }
+  };
+
+  const handleDeleteRevision = async (revisionId, revisionLabel) => {
+    if (!window.confirm(`Are you sure you want to delete tune revision "${revisionLabel}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/tune-revisions/${revisionId}`);
+      toast.success('Tune revision deleted successfully');
+      
+      // Refresh tune revisions
+      const revisionsRes = await api.get(`/tune-revisions?vehicle_id=${vehicleId}`);
+      setTuneRevisions(revisionsRes.data);
+    } catch (error) {
+      console.error('Failed to delete tune revision:', error);
+      toast.error('Failed to delete tune revision');
+    }
+  };
+
   const generatePDF = async () => {
     try {
       const doc = new jsPDF();
