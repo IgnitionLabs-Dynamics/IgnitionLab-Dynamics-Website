@@ -261,8 +261,7 @@ export default function Vehicles() {
                       value={formData.vin}
                       onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase() })}
                       className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
-                      placeholder="17-character VIN"
-                      maxLength={17}
+                      placeholder="Enter VIN"
                       required
                     />
                   </div>
