@@ -36,6 +36,17 @@ export default function CustomerDetail() {
   const [customer, setCustomer] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    full_name: '',
+    phone_number: '',
+    whatsapp_number: '',
+    email: '',
+    instagram_handle: '',
+    address: '',
+    gst_number: '',
+    notes: ''
+  });
 
   useEffect(() => {
     fetchCustomerData();
@@ -54,6 +65,33 @@ export default function CustomerDetail() {
       toast.error('Failed to load customer details');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditClick = () => {
+    setEditFormData({
+      full_name: customer.full_name || '',
+      phone_number: customer.phone_number || '',
+      whatsapp_number: customer.whatsapp_number || '',
+      email: customer.email || '',
+      instagram_handle: customer.instagram_handle || '',
+      address: customer.address || '',
+      gst_number: customer.gst_number || '',
+      notes: customer.notes || ''
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/customers/${customerId}`, editFormData);
+      toast.success('Customer updated successfully');
+      setEditDialogOpen(false);
+      fetchCustomerData();
+    } catch (error) {
+      console.error('Failed to update customer:', error);
+      toast.error('Failed to update customer');
     }
   };
 
