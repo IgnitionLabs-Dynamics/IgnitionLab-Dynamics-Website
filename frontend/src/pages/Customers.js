@@ -15,7 +15,7 @@ import {
 } from '../components/ui/dialog';
 import api from '../lib/api';
 import { toast } from 'sonner';
-import { Plus, Phone, Mail, User, ChevronRight } from 'lucide-react';
+import { Plus, Phone, Mail, User, ChevronRight, Trash2 } from 'lucide-react';
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);
