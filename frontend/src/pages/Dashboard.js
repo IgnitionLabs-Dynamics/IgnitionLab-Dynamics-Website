@@ -102,9 +102,9 @@ export default function Dashboard() {
             const getNavigationPath = (title) => {
               switch (title) {
                 case 'Jobs This Week':
-                  return '/vehicles';
+                  return '/jobs?filter=this_week';
                 case 'Pending Payments':
-                  return '/vehicles';
+                  return '/jobs?filter=pending_payments';
                 case 'Upcoming Reminders':
                   return '/reminders';
                 case 'Total Customers':
