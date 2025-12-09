@@ -643,6 +643,29 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user_with
     total_customers = await db.customers.count_documents({})
     total_vehicles = await db.vehicles.count_documents({})
     
+    # Income calculations
+    # Weekly income
+    weekly_billing = await db.billing.find(
+        {"created_at": {"$gte": week_ago}, "payment_status": "paid"}, 
+        {"_id": 0, "final_billed_amount": 1}
+    ).to_list(1000)
+    weekly_income = sum(bill.get("final_billed_amount", 0) for bill in weekly_billing)
+    
+    # Monthly income
+    month_ago = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    monthly_billing = await db.billing.find(
+        {"created_at": {"$gte": month_ago}, "payment_status": "paid"}, 
+        {"_id": 0, "final_billed_amount": 1}
+    ).to_list(1000)
+    monthly_income = sum(bill.get("final_billed_amount", 0) for bill in monthly_billing)
+    
+    # All-time income
+    all_time_billing = await db.billing.find(
+        {"payment_status": "paid"}, 
+        {"_id": 0, "final_billed_amount": 1}
+    ).to_list(10000)
+    all_time_income = sum(bill.get("final_billed_amount", 0) for bill in all_time_billing)
+    
     # Recent jobs
     recent_jobs = await db.jobs.find({}, {"_id": 0}).sort("date", -1).limit(5).to_list(5)
     
@@ -652,6 +675,9 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user_with
         "upcoming_reminders": upcoming_reminders,
         "total_customers": total_customers,
         "total_vehicles": total_vehicles,
+        "weekly_income": weekly_income,
+        "monthly_income": monthly_income,
+        "all_time_income": all_time_income,
         "recent_jobs": recent_jobs
     }
 
