@@ -235,11 +235,12 @@ export default function Customers() {
         {/* Customers List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {customers.map((customer) => (
-            <Link key={customer.id} to={`/customers/${customer.id}`}>
-              <Card
-                data-testid="customer-card"
-                className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6 card-hover cursor-pointer"
-              >
+            <Card
+              key={customer.id}
+              data-testid="customer-card"
+              className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6 card-hover relative"
+            >
+              <Link to={`/customers/${customer.id}`}>
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-sm flex items-center justify-center">
                     <User className="w-6 h-6 text-amber-500" />
