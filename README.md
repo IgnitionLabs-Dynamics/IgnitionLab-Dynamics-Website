@@ -266,12 +266,13 @@ tail -f /var/log/supervisor/frontend.err.log
    - Positioned between search bar and profile button
    - Makes the system "self-aware" of current date for better context
 
-7. **UI/UX Improvements**:
+8. **UI/UX Improvements**:
    - Removed "New Job" button from main header
    - Removed "Register here" link from login page
    - VIN field no longer has 17-character limit
    - Cleaner, more focused interface
    - Enhanced card interactions with hover states
+   - Live clock for real-time date/time awareness
 
 ### Code Refactoring:
 1. **Backend Restructuring**:
