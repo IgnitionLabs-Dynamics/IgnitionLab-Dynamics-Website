@@ -275,6 +275,139 @@ export default function CustomerDetail() {
             </div>
           </div>
         </div>
+
+        {/* Edit Customer Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="font-heading text-2xl font-bold text-white">
+                Edit Customer Details
+              </DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleEditSubmit} className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <Label htmlFor="full_name" className="text-zinc-300">
+                    Full Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="full_name"
+                    value={editFormData.full_name}
+                    onChange={(e) => setEditFormData({ ...editFormData, full_name: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="phone_number" className="text-zinc-300">
+                    Phone Number <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="phone_number"
+                    value={editFormData.phone_number}
+                    onChange={(e) => setEditFormData({ ...editFormData, phone_number: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="whatsapp_number" className="text-zinc-300">
+                    WhatsApp Number
+                  </Label>
+                  <Input
+                    id="whatsapp_number"
+                    value={editFormData.whatsapp_number}
+                    onChange={(e) => setEditFormData({ ...editFormData, whatsapp_number: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <Label htmlFor="email" className="text-zinc-300">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={editFormData.email}
+                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="instagram_handle" className="text-zinc-300">
+                    Instagram Handle
+                  </Label>
+                  <Input
+                    id="instagram_handle"
+                    value={editFormData.instagram_handle}
+                    onChange={(e) => setEditFormData({ ...editFormData, instagram_handle: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                    placeholder="@username"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="gst_number" className="text-zinc-300">
+                    GST Number
+                  </Label>
+                  <Input
+                    id="gst_number"
+                    value={editFormData.gst_number}
+                    onChange={(e) => setEditFormData({ ...editFormData, gst_number: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <Label htmlFor="address" className="text-zinc-300">
+                    Address
+                  </Label>
+                  <Textarea
+                    id="address"
+                    value={editFormData.address}
+                    onChange={(e) => setEditFormData({ ...editFormData, address: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                    rows={2}
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <Label htmlFor="notes" className="text-zinc-300">
+                    Notes
+                  </Label>
+                  <Textarea
+                    id="notes"
+                    value={editFormData.notes}
+                    onChange={(e) => setEditFormData({ ...editFormData, notes: e.target.value })}
+                    className="bg-zinc-950/50 border-zinc-800 focus:border-blue-500 text-white"
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-3">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-blue-500 hover:bg-blue-400 text-white font-bold uppercase tracking-wider"
+                >
+                  Save Changes
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setEditDialogOpen(false)}
+                  variant="outline"
+                  className="flex-1 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
