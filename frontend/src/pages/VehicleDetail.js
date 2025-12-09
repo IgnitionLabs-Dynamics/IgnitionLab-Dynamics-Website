@@ -43,6 +43,24 @@ export default function VehicleDetail() {
     description: '',
     diff_notes: '',
   });
+  const [editingRevision, setEditingRevision] = useState(null);
+  const [editJobDialogOpen, setEditJobDialogOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState(null);
+  const [jobFormData, setJobFormData] = useState({
+    date: '',
+    technician_name: '',
+    work_performed: '',
+    tune_stage: '',
+    mods_installed: '',
+    dyno_results: '',
+    before_ecu_map_version: '',
+    after_ecu_map_version: '',
+    calibration_notes: '',
+    road_test_notes: '',
+    next_recommendations: '',
+    warranty_or_retune_status: '',
+    odometer_at_visit: '',
+  });
 
   useEffect(() => {
     fetchVehicleData();
