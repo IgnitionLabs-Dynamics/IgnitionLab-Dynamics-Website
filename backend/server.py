@@ -622,8 +622,13 @@ async def get_tune_revisions(vehicle_id: Optional[str] = None, job_id: Optional[
     revisions = await db.tune_revisions.find(query, {"_id": 0}).sort("created_at", 1).to_list(1000)
     return revisions
 
+class TuneRevisionUpdate(BaseModel):
+    revision_label: str
+    description: Optional[str] = None
+    diff_notes: Optional[str] = None
+
 @api_router.put("/tune-revisions/{revision_id}", response_model=TuneRevision)
-async def update_tune_revision(revision_id: str, revision_update: TuneRevisionCreate, current_user: dict = Depends(get_current_user)):
+async def update_tune_revision(revision_id: str, revision_update: TuneRevisionUpdate, current_user: dict = Depends(get_current_user)):
     update_data = {
         "revision_label": revision_update.revision_label,
         "description": revision_update.description,
