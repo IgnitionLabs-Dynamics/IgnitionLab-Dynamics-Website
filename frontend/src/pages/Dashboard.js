@@ -4,6 +4,7 @@ import DashboardLayout from '../components/DashboardLayout';
 import { Card } from '../components/ui/card';
 import api from '../lib/api';
 import { formatDate, formatCurrency } from '../lib/utils';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Briefcase,
   CreditCard,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [incomePeriod, setIncomePeriod] = useState('weekly'); // weekly, monthly, all_time
