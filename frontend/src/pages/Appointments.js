@@ -96,6 +96,21 @@ export default function Appointments() {
     }
   };
 
+  const handleDeleteAppointment = async (appointmentId, serviceType) => {
+    if (!window.confirm(`Are you sure you want to delete the "${serviceType}" appointment? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await api.delete(`/appointments/${appointmentId}`);
+      toast.success('Appointment deleted successfully');
+      fetchData();
+    } catch (error) {
+      console.error('Failed to delete appointment:', error);
+      toast.error('Failed to delete appointment');
+    }
+  };
+
   const getStatusBadgeColor = (status) => {
     switch (status) {
       case 'scheduled':
