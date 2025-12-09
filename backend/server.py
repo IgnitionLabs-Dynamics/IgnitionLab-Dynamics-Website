@@ -712,6 +712,23 @@ async def global_search(query: str, current_user: dict = Depends(get_current_use
         "total_results": len(customers) + len(vehicles)
     }
 
+# ==================== HEALTH CHECK ENDPOINT ====================
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Kubernetes probes."""
+    try:
+        # Check database connection
+        await db.command('ping')
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "service": "ignitionlab-dynamics"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        raise HTTPException(status_code=503, detail="Service unavailable")
+
 # Include the router in the main app
 app.include_router(api_router)
 
