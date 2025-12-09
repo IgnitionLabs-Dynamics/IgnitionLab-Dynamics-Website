@@ -250,10 +250,21 @@ tail -f /var/log/supervisor/frontend.err.log
 
 6. **Revenue Overview Dashboard Card**:
    - New interactive income statistics card showing financial overview
-   - Toggle between three time periods: Weekly, Monthly, and All-Time
+   - Toggle between three calendar-based periods:
+     * **This Week**: Current calendar week (Monday-Sunday)
+     * **This Month**: Current calendar month (1st to end of month)
+     * **All-Time**: Total revenue since inception
    - Displays actual amounts for each period with visual highlighting
+   - Shows current period context (e.g., "December 2025", "This Week (9 Dec)")
    - Real-time calculations based on paid invoices from billing records
    - Color-coded with emerald theme for positive financial metrics
+
+7. **Live Date & Time Display**:
+   - Real-time clock in header showing current date and time
+   - Updates every second for accurate timekeeping
+   - Format: "Day, DD Mon YYYY HH:MM:SS"
+   - Positioned between search bar and profile button
+   - Makes the system "self-aware" of current date for better context
 
 7. **UI/UX Improvements**:
    - Removed "New Job" button from main header
