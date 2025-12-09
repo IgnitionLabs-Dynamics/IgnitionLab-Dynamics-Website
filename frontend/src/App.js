@@ -9,6 +9,7 @@ import Customers from './pages/Customers';
 import CustomerDetail from './pages/CustomerDetail';
 import Vehicles from './pages/Vehicles';
 import VehicleDetail from './pages/VehicleDetail';
+import Jobs from './pages/Jobs';
 import CreateJob from './pages/CreateJob';
 import Reminders from './pages/Reminders';
 import UserManagement from './pages/UserManagement';
