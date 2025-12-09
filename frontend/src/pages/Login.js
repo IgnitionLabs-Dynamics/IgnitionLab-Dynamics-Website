@@ -12,12 +12,31 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [storageWarning, setStorageWarning] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Check if localStorage is available and working
+  React.useEffect(() => {
+    try {
+      const test = '__storage_test__';
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      setStorageWarning(false);
+    } catch (e) {
+      setStorageWarning(true);
+      console.warn('localStorage not available:', e);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Warn user if remember me is checked but storage isn't working
+    if (rememberMe && storageWarning) {
+      toast.warning('Browser storage is disabled. "Remember me" may not work in private/incognito mode.');
+    }
 
     const result = await login(username, password, rememberMe);
     
