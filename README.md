@@ -170,6 +170,8 @@ tail -f /var/log/supervisor/frontend.err.log
 - Protected API endpoints
 - CORS configuration
 - Secure password change functionality
+- **Revenue visibility**: Financial data (Revenue Overview) restricted to admin role only
+- User management restricted to admin role only
 
 ## 📱 Frontend Pages
 
