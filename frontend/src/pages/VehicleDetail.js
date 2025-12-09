@@ -63,6 +63,21 @@ export default function VehicleDetail() {
     warranty_or_retune_status: '',
     odometer_at_visit: '',
   });
+  const [editVehicleDialogOpen, setEditVehicleDialogOpen] = useState(false);
+  const [vehicleFormData, setVehicleFormData] = useState({
+    make: '',
+    model: '',
+    variant: '',
+    year: '',
+    engine_code: '',
+    ecu_type: '',
+    vin: '',
+    registration_number: '',
+    fuel_type: '',
+    gearbox: '',
+    odometer_at_last_visit: '',
+    notes: '',
+  });
 
   useEffect(() => {
     fetchVehicleData();
