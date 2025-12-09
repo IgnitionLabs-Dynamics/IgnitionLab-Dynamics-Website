@@ -108,6 +108,21 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  // Periodically check if token still exists in localStorage (helps with mobile browser issues)
+  useEffect(() => {
+    if (!user) return;
+
+    const checkTokenPersistence = setInterval(() => {
+      const storedToken = getStoredToken();
+      if (!storedToken && token) {
+        console.warn('Token was cleared from localStorage, re-storing...');
+        setStoredToken(token);
+      }
+    }, 5000); // Check every 5 seconds
+
+    return () => clearInterval(checkTokenPersistence);
+  }, [user, token]);
+
   return (
     <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
