@@ -83,7 +83,12 @@ async def login(user_login: UserLogin):
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # If "Remember Me" is checked, token lasts 30 days. Otherwise, 60 minutes.
+    if user_login.remember_me:
+        access_token_expires = timedelta(days=30)
+    else:
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
     access_token = create_access_token(
         data={"sub": user["username"]}, expires_delta=access_token_expires
     )
