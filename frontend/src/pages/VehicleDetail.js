@@ -274,6 +274,46 @@ export default function VehicleDetail() {
     }
   };
 
+  const handleEditVehicle = () => {
+    setVehicleFormData({
+      make: vehicle.make,
+      model: vehicle.model,
+      variant: vehicle.variant,
+      year: vehicle.year.toString(),
+      engine_code: vehicle.engine_code,
+      ecu_type: vehicle.ecu_type,
+      vin: vehicle.vin,
+      registration_number: vehicle.registration_number,
+      fuel_type: vehicle.fuel_type,
+      gearbox: vehicle.gearbox,
+      odometer_at_last_visit: vehicle.odometer_at_last_visit ? vehicle.odometer_at_last_visit.toString() : '',
+      notes: vehicle.notes || '',
+    });
+    setEditVehicleDialogOpen(true);
+  };
+
+  const handleUpdateVehicle = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/vehicles/${vehicleId}`, {
+        customer_id: vehicle.customer_id,
+        ...vehicleFormData,
+        year: parseInt(vehicleFormData.year),
+        odometer_at_last_visit: vehicleFormData.odometer_at_last_visit ? parseInt(vehicleFormData.odometer_at_last_visit) : null,
+      });
+
+      toast.success('Vehicle updated successfully!');
+      setEditVehicleDialogOpen(false);
+      
+      // Refresh vehicle data
+      const vehicleRes = await api.get(`/vehicles/${vehicleId}`);
+      setVehicle(vehicleRes.data);
+    } catch (error) {
+      console.error('Failed to update vehicle:', error);
+      toast.error('Failed to update vehicle');
+    }
+  };
+
   const generatePDF = async () => {
     try {
       const doc = new jsPDF();
