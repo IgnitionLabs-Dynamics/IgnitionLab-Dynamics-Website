@@ -569,7 +569,7 @@ export default function VehicleDetail() {
                       data-testid="submit-tune-revision-button"
                       className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow"
                     >
-                      Add Revision
+                      {editingRevision ? 'Update Revision' : 'Add Revision'}
                     </Button>
                   </form>
                 </DialogContent>
