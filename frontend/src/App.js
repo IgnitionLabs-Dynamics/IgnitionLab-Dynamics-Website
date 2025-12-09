@@ -137,7 +137,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="/auth-diagnostics" element={<AuthDiagnostics />} />
     </Routes>
   );
 }
