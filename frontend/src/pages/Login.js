@@ -119,18 +119,29 @@ export default function Login() {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                id="rememberMe"
-                data-testid="login-remember-me-checkbox"
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 bg-zinc-900/50 border-zinc-800 rounded focus:ring-amber-500 focus:ring-2 text-amber-500"
-              />
-              <Label htmlFor="rememberMe" className="text-zinc-400 text-sm cursor-pointer">
-                Remember me for 30 days
-              </Label>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  id="rememberMe"
+                  data-testid="login-remember-me-checkbox"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 bg-zinc-900/50 border-zinc-800 rounded focus:ring-amber-500 focus:ring-2 text-amber-500"
+                />
+                <Label htmlFor="rememberMe" className="text-zinc-400 text-sm cursor-pointer">
+                  Remember me for 30 days
+                </Label>
+              </div>
+              {storageWarning && (
+                <div className="flex items-start space-x-2 text-amber-500 text-xs bg-amber-500/10 border border-amber-500/20 rounded p-2">
+                  <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <p>
+                    Browser storage is disabled. "Remember me" won't work in private/incognito mode. 
+                    Please use normal browsing mode for this feature.
+                  </p>
+                </div>
+              )}
             </div>
 
             <Button
