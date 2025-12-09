@@ -782,6 +782,15 @@ async def update_appointment_status(appointment_id: str, status_update: StatusUp
     
     return {"message": "Appointment status updated successfully"}
 
+@api_router.delete("/appointments/{appointment_id}")
+async def delete_appointment(appointment_id: str, current_user: dict = Depends(get_current_user)):
+    result = await db.appointments.delete_one({"id": appointment_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    
+    return {"message": "Appointment deleted successfully"}
+
 # ==================== DASHBOARD STATS ====================
 
 @api_router.get("/dashboard/stats", response_model=DashboardStats)
