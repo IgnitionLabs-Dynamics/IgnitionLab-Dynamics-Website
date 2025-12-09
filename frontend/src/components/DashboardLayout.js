@@ -49,21 +49,9 @@ export default function DashboardLayout({ children }) {
     e.preventDefault();
     if (!searchQuery.trim()) return;
 
-    try {
-      const response = await api.get(`/search/${searchQuery}`);
-      const { customers, vehicles } = response.data;
-
-      if (vehicles.length > 0) {
-        navigate(`/vehicles/${vehicles[0].id}`);
-      } else if (customers.length > 0) {
-        navigate(`/customers/${customers[0].id}`);
-      } else {
-        toast.info('No results found');
-      }
-    } catch (error) {
-      console.error('Search error:', error);
-      toast.error('Search failed');
-    }
+    // Navigate to search results page with query
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    setSearchQuery('');
   };
 
   return (
