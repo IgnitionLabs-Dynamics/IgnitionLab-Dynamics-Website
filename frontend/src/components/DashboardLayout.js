@@ -181,15 +181,8 @@ export default function DashboardLayout({ children }) {
                 </div>
               </form>
 
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={() => navigate('/jobs/create')}
-                  data-testid="create-job-button"
-                  className="bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow text-xs md:text-sm"
-                >
-                  + New Job
-                </Button>
-              </div>
+              {/* Right side - can add actions here if needed */}
+              <div className="w-4"></div>
             </div>
           </div>
         </header>
