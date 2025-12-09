@@ -118,6 +118,76 @@ async def register(user_login: UserLogin):
     
     return {"message": "User created successfully", "username": new_user.username}
 
+class UpdateUsernameRequest(BaseModel):
+    new_username: str
+    password: str
+
+class UpdatePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+@api_router.put("/auth/update-username")
+async def update_username(
+    request: UpdateUsernameRequest,
+    current_user: dict = Depends(get_current_user_with_db)
+):
+    # Verify current password
+    if not verify_password(request.password, current_user["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password"
+        )
+    
+    # Check if new username already exists
+    existing_user = await db.users.find_one({"username": request.new_username}, {"_id": 0})
+    if existing_user and existing_user["id"] != current_user["id"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already taken"
+        )
+    
+    # Update username
+    result = await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"username": request.new_username}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "Username updated successfully", "username": request.new_username}
+
+@api_router.put("/auth/update-password")
+async def update_password(
+    request: UpdatePasswordRequest,
+    current_user: dict = Depends(get_current_user_with_db)
+):
+    # Verify current password
+    if not verify_password(request.current_password, current_user["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect current password"
+        )
+    
+    # Validate new password
+    if len(request.new_password) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 6 characters"
+        )
+    
+    # Update password
+    new_hashed_password = get_password_hash(request.new_password)
+    result = await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"hashed_password": new_hashed_password}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "Password updated successfully"}
+
 # ==================== USER MANAGEMENT ROUTES (ADMIN ONLY) ====================
 
 @api_router.get("/users", response_model=List[UserResponse])
