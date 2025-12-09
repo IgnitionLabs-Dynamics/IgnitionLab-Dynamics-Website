@@ -501,7 +501,9 @@ async def create_vehicle(vehicle: VehicleCreate, current_user: dict = Depends(ge
     
     # Generate QR code
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
-    qr_data = f"https://workshopwise.preview.emergentagent.com/vehicles/{vehicle_obj.id}"
+    # Use environment variable for frontend URL, fallback to localhost for development
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+    qr_data = f"{frontend_url}/vehicles/{vehicle_obj.id}"
     qr.add_data(qr_data)
     qr.make(fit=True)
     
