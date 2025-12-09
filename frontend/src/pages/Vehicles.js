@@ -388,8 +388,21 @@ export default function Vehicles() {
                     <p className="font-mono text-xs text-amber-500">{vehicle.ecu_type}</p>
                   </div>
                 </div>
-              </Card>
-            </Link>
+              </Link>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDeleteVehicle(vehicle.id, `${vehicle.make} ${vehicle.model}`);
+                }}
+                data-testid="delete-vehicle-button"
+                variant="outline"
+                size="sm"
+                className="absolute bottom-4 right-4 border-red-500/30 text-red-500 hover:bg-red-500/10"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </Card>
           ))}
         </div>
 
