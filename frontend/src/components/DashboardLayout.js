@@ -122,6 +122,15 @@ export default function DashboardLayout({ children }) {
                 <p className="text-xs text-zinc-500 uppercase">{user?.role}</p>
               </div>
             </div>
+            <Link to="/profile" onClick={() => setSidebarOpen(false)}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-zinc-400 hover:text-white hover:bg-zinc-800/50 mb-2"
+              >
+                <UserCog className="w-4 h-4 mr-2" />
+                Profile Settings
+              </Button>
+            </Link>
             <Button
               onClick={handleLogout}
               data-testid="logout-button"
