@@ -11,7 +11,7 @@ A comprehensive, production-ready web application for managing vehicle servicing
 - **Tune Revisions**: Version control for tune files and calibration changes
 - **Billing & Payments**: Invoice tracking with payment status monitoring
 - **Dashboard Analytics**: Real-time stats and insights with clickable navigation
-- **Revenue Overview**: Track income by calendar week, calendar month, and all-time from paid invoices
+- **Revenue Overview** (Admin Only): Track income by calendar week, calendar month, and all-time from paid invoices
 - **Live Clock**: Real-time date and time display in header for temporal awareness
 - **Filtered Views**: Quick access to jobs this week and pending payments
 - **Appointments & Reminders**: Schedule management system
