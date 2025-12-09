@@ -172,70 +172,72 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Income Card with Period Toggle */}
-        <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1">
-              <p className="text-sm text-zinc-400 mb-1">Revenue Overview</p>
-              <p className="text-3xl font-bold text-emerald-500 mb-1">
-                {formatCurrency(getIncomeValue())}
-              </p>
-              <p className="text-xs text-amber-500 font-medium">
-                {getIncomeLabel()}
-              </p>
+        {/* Income Card with Period Toggle - Admin Only */}
+        {user?.role === 'admin' && (
+          <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <p className="text-sm text-zinc-400 mb-1">Revenue Overview</p>
+                <p className="text-3xl font-bold text-emerald-500 mb-1">
+                  {formatCurrency(getIncomeValue())}
+                </p>
+                <p className="text-xs text-amber-500 font-medium">
+                  {getIncomeLabel()}
+                </p>
+              </div>
+              <div className="p-3 rounded-sm bg-emerald-500/10 border-emerald-500/20 border">
+                <DollarSign className="w-6 h-6 text-emerald-500" />
+              </div>
             </div>
-            <div className="p-3 rounded-sm bg-emerald-500/10 border-emerald-500/20 border">
-              <DollarSign className="w-6 h-6 text-emerald-500" />
+            
+            {/* Period Toggle Buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIncomePeriod('weekly')}
+                className={`flex-1 px-4 py-2 text-sm font-medium rounded transition-colors ${
+                  incomePeriod === 'weekly'
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
+                }`}
+              >
+                This Week
+                <span className="block text-xs mt-0.5 opacity-75">
+                  {formatCurrency(stats?.weekly_income || 0)}
+                </span>
+              </button>
+              <button
+                onClick={() => setIncomePeriod('monthly')}
+                className={`flex-1 px-4 py-2 text-sm font-medium rounded transition-colors ${
+                  incomePeriod === 'monthly'
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
+                }`}
+              >
+                This Month
+                <span className="block text-xs mt-0.5 opacity-75">
+                  {formatCurrency(stats?.monthly_income || 0)}
+                </span>
+              </button>
+              <button
+                onClick={() => setIncomePeriod('all_time')}
+                className={`flex-1 px-4 py-2 text-sm font-medium rounded transition-colors ${
+                  incomePeriod === 'all_time'
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
+                }`}
+              >
+                All-Time
+                <span className="block text-xs mt-0.5 opacity-75">
+                  {formatCurrency(stats?.all_time_income || 0)}
+                </span>
+              </button>
             </div>
-          </div>
-          
-          {/* Period Toggle Buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setIncomePeriod('weekly')}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded transition-colors ${
-                incomePeriod === 'weekly'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
-              }`}
-            >
-              This Week
-              <span className="block text-xs mt-0.5 opacity-75">
-                {formatCurrency(stats?.weekly_income || 0)}
-              </span>
-            </button>
-            <button
-              onClick={() => setIncomePeriod('monthly')}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded transition-colors ${
-                incomePeriod === 'monthly'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
-              }`}
-            >
-              This Month
-              <span className="block text-xs mt-0.5 opacity-75">
-                {formatCurrency(stats?.monthly_income || 0)}
-              </span>
-            </button>
-            <button
-              onClick={() => setIncomePeriod('all_time')}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded transition-colors ${
-                incomePeriod === 'all_time'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-zinc-800/50 text-zinc-400 border border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300'
-              }`}
-            >
-              All-Time
-              <span className="block text-xs mt-0.5 opacity-75">
-                {formatCurrency(stats?.all_time_income || 0)}
-              </span>
-            </button>
-          </div>
-          
-          <p className="text-xs text-zinc-500 mt-3 text-center">
-            Based on paid invoices • Calendar weeks start Monday
-          </p>
-        </Card>
+            
+            <p className="text-xs text-zinc-500 mt-3 text-center">
+              Based on paid invoices • Calendar weeks start Monday
+            </p>
+          </Card>
+        )}
 
         {/* Recent Jobs */}
         <div>
