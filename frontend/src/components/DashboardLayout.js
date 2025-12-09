@@ -181,8 +181,16 @@ export default function DashboardLayout({ children }) {
                 </div>
               </form>
 
-              {/* Right side - can add actions here if needed */}
-              <div className="w-4"></div>
+              {/* Profile Button */}
+              <Button
+                onClick={() => navigate('/profile')}
+                data-testid="header-profile-button"
+                variant="ghost"
+                className="text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+              >
+                <UserCog className="w-5 h-5 mr-2" />
+                <span className="hidden md:inline">Profile</span>
+              </Button>
             </div>
           </div>
         </header>
