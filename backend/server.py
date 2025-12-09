@@ -371,7 +371,14 @@ class UserCreate(BaseModel):
 class RoleUpdate(BaseModel):
     role: str
 
-@api_router.get("/users", response_model=List[User])
+class UserResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    username: str
+    role: str
+    created_at: str
+
+@api_router.get("/users", response_model=List[UserResponse])
 async def get_users(current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
