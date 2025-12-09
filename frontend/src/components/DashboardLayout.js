@@ -180,6 +180,29 @@ export default function DashboardLayout({ children }) {
                 </div>
               </form>
 
+              {/* Date and Time Display */}
+              <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-zinc-900/50 border border-zinc-800 rounded-sm mr-4">
+                <Clock className="w-4 h-4 text-amber-500" />
+                <div className="text-sm">
+                  <div className="text-white font-medium">
+                    {currentDateTime.toLocaleDateString('en-GB', { 
+                      weekday: 'short', 
+                      day: '2-digit', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
+                  </div>
+                  <div className="text-zinc-400 text-xs">
+                    {currentDateTime.toLocaleTimeString('en-GB', { 
+                      hour: '2-digit', 
+                      minute: '2-digit', 
+                      second: '2-digit',
+                      hour12: false
+                    })}
+                  </div>
+                </div>
+              </div>
+
               {/* Profile Button */}
               <Button
                 onClick={() => navigate('/profile')}
