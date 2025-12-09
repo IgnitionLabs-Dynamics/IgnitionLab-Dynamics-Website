@@ -107,6 +107,28 @@ The feature is straightforward and requires no configuration:
 
 That's it! If you checked "Remember me", you won't need to log in again for 30 days.
 
+## Mobile Improvements (v1.1)
+
+After user feedback regarding mobile browser issues, the following enhancements were made:
+
+### Enhanced localStorage Handling
+- Added robust wrapper functions for localStorage access with error handling
+- Prevents crashes when storage is unavailable (private/incognito mode)
+- Periodic checks to restore token if cleared by mobile browser
+
+### Improved Token Verification
+- Only logs out on 401 (Unauthorized) responses, not network errors
+- Keeps users logged in during temporary network issues
+- Added comprehensive console logging for debugging
+
+### User Warnings
+- Automatic detection of localStorage availability
+- Visual warning banner when storage is disabled
+- Clear messaging about private/incognito mode limitations
+
+### Mobile-Specific Considerations
+See `/app/MOBILE_REMEMBER_ME_GUIDE.md` for comprehensive troubleshooting guide.
+
 ## Future Enhancements (Optional)
 
 Potential improvements for future iterations:
@@ -114,3 +136,5 @@ Potential improvements for future iterations:
 - [ ] Implement refresh tokens for even longer sessions without security trade-offs
 - [ ] Add IP-based restrictions or device fingerprinting for enhanced security
 - [ ] Provide user notifications when their long-lived token is about to expire
+- [ ] Service Worker implementation for better mobile persistence
+- [ ] Biometric authentication support (fingerprint/Face ID)
