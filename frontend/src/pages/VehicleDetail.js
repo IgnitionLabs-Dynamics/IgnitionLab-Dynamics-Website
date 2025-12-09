@@ -491,7 +491,17 @@ export default function VehicleDetail() {
                 Download PDF
               </Button>
 
-              <Dialog open={revisionDialogOpen} onOpenChange={setRevisionDialogOpen}>
+              <Dialog open={revisionDialogOpen} onOpenChange={(open) => {
+                setRevisionDialogOpen(open);
+                if (!open) {
+                  setEditingRevision(null);
+                  setRevisionFormData({
+                    revision_label: '',
+                    description: '',
+                    diff_notes: '',
+                  });
+                }
+              }}>
                 <DialogTrigger asChild>
                   <Button
                     data-testid="add-tune-revision-button"
@@ -505,7 +515,7 @@ export default function VehicleDetail() {
                 <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-lg">
                   <DialogHeader>
                     <DialogTitle className="font-heading text-2xl font-bold text-white">
-                      Add Tune Revision
+                      {editingRevision ? 'Edit Tune Revision' : 'Add Tune Revision'}
                     </DialogTitle>
                   </DialogHeader>
                   <form onSubmit={handleCreateTuneRevision} className="space-y-4 mt-4">
