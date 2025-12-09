@@ -1225,6 +1225,202 @@ export default function VehicleDetail() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Vehicle Dialog */}
+      <Dialog open={editVehicleDialogOpen} onOpenChange={setEditVehicleDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-2xl font-bold text-white">
+              Edit Vehicle Details
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateVehicle} className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit_make" className="text-zinc-300">
+                  Make <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_make"
+                  value={vehicleFormData.make}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, make: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_model" className="text-zinc-300">
+                  Model <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_model"
+                  value={vehicleFormData.model}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, model: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_variant" className="text-zinc-300">
+                  Variant <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_variant"
+                  value={vehicleFormData.variant}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, variant: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_year" className="text-zinc-300">
+                  Year <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_year"
+                  type="number"
+                  value={vehicleFormData.year}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, year: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_engine_code" className="text-zinc-300">
+                  Engine Code <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_engine_code"
+                  value={vehicleFormData.engine_code}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, engine_code: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_ecu_type" className="text-zinc-300">
+                  ECU Type <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_ecu_type"
+                  value={vehicleFormData.ecu_type}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, ecu_type: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_vin" className="text-zinc-300">
+                  VIN <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_vin"
+                  value={vehicleFormData.vin}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, vin: e.target.value.toUpperCase() })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                  maxLength={17}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_registration" className="text-zinc-300">
+                  Registration Number <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="edit_registration"
+                  value={vehicleFormData.registration_number}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, registration_number: e.target.value.toUpperCase() })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white font-mono"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit_fuel_type" className="text-zinc-300">
+                  Fuel Type <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={vehicleFormData.fuel_type}
+                  onValueChange={(value) => setVehicleFormData({ ...vehicleFormData, fuel_type: value })}
+                >
+                  <SelectTrigger className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border-zinc-800">
+                    <SelectItem value="Petrol" className="text-white">Petrol</SelectItem>
+                    <SelectItem value="Diesel" className="text-white">Diesel</SelectItem>
+                    <SelectItem value="CNG" className="text-white">CNG</SelectItem>
+                    <SelectItem value="Electric" className="text-white">Electric</SelectItem>
+                    <SelectItem value="Hybrid" className="text-white">Hybrid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="edit_gearbox" className="text-zinc-300">
+                  Gearbox <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={vehicleFormData.gearbox}
+                  onValueChange={(value) => setVehicleFormData({ ...vehicleFormData, gearbox: value })}
+                >
+                  <SelectTrigger className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border-zinc-800">
+                    <SelectItem value="Manual" className="text-white">Manual</SelectItem>
+                    <SelectItem value="Automatic" className="text-white">Automatic</SelectItem>
+                    <SelectItem value="AMT" className="text-white">AMT</SelectItem>
+                    <SelectItem value="DCT" className="text-white">DCT</SelectItem>
+                    <SelectItem value="CVT" className="text-white">CVT</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="edit_odometer" className="text-zinc-300">
+                  Odometer (km)
+                </Label>
+                <Input
+                  id="edit_odometer"
+                  type="number"
+                  value={vehicleFormData.odometer_at_last_visit}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, odometer_at_last_visit: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                />
+              </div>
+
+              <div className="col-span-2">
+                <Label htmlFor="edit_notes" className="text-zinc-300">
+                  Notes
+                </Label>
+                <Textarea
+                  id="edit_notes"
+                  value={vehicleFormData.notes}
+                  onChange={(e) => setVehicleFormData({ ...vehicleFormData, notes: e.target.value })}
+                  className="bg-zinc-950/50 border-zinc-800 focus:border-amber-500 text-white"
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              data-testid="update-vehicle-button"
+              className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider btn-glow"
+            >
+              Update Vehicle
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
