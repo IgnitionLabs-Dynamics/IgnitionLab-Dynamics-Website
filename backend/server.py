@@ -386,7 +386,7 @@ async def get_users(current_user: dict = Depends(get_current_user)):
     users = await db.users.find({}, {"_id": 0, "hashed_password": 0}).to_list(1000)
     return users
 
-@api_router.post("/users", response_model=User)
+@api_router.post("/users", response_model=UserResponse)
 async def create_user(user_data: UserCreate, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
@@ -403,7 +403,13 @@ async def create_user(user_data: UserCreate, current_user: dict = Depends(get_cu
     )
     await db.users.insert_one(new_user.model_dump())
     
-    return new_user
+    # Return without password
+    return UserResponse(
+        id=new_user.id,
+        username=new_user.username,
+        role=new_user.role,
+        created_at=new_user.created_at
+    )
 
 @api_router.put("/users/{user_id}/role")
 async def update_user_role(user_id: str, role_update: RoleUpdate, current_user: dict = Depends(get_current_user)):
