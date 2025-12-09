@@ -254,7 +254,6 @@ export default function UserManagement() {
                   <SelectContent className="bg-zinc-900 border-zinc-800">
                     <SelectItem value="admin" className="text-white">Admin</SelectItem>
                     <SelectItem value="technician" className="text-white">Technician</SelectItem>
-                    <SelectItem value="viewer" className="text-white">Viewer</SelectItem>
                   </SelectContent>
                 </Select>
 
