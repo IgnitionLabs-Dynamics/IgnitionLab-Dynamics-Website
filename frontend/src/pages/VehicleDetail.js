@@ -688,7 +688,19 @@ export default function VehicleDetail() {
           <div className="lg:col-span-1 space-y-4">
             {/* Vehicle Technical Details */}
             <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-sm p-6">
-              <h2 className="font-heading text-xl font-bold text-white mb-4">Technical Details</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-heading text-xl font-bold text-white">Technical Details</h2>
+                <Button
+                  onClick={handleEditVehicle}
+                  data-testid="edit-vehicle-button"
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              </div>
               <div className="space-y-3 text-sm">
                 <div>
                   <p className="text-xs text-zinc-500">Registration Number</p>
