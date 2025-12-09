@@ -348,7 +348,7 @@ export default function Appointments() {
                     </div>
 
                     {/* Status Actions */}
-                    <div className="flex space-x-2 ml-4">
+                    <div className="flex flex-wrap gap-2 ml-4">
                       {appointment.status === 'scheduled' && (
                         <Button
                           onClick={() => handleStatusUpdate(appointment.id, 'confirmed')}
@@ -381,6 +381,15 @@ export default function Appointments() {
                           </Button>
                         </>
                       )}
+                      <Button
+                        onClick={() => handleDeleteAppointment(appointment.id, appointment.service_type)}
+                        data-testid="delete-appointment-button"
+                        size="sm"
+                        variant="outline"
+                        className="border-red-500/30 text-red-500 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 </Card>
