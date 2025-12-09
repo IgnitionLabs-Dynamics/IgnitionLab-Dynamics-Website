@@ -13,13 +13,16 @@ A comprehensive, production-ready web application for managing vehicle servicing
 - **Dashboard Analytics**: Real-time stats and insights
 - **Filtered Views**: Quick access to jobs this week and pending payments
 - **Appointments & Reminders**: Schedule management system
+- **User Profile Management**: Change username and password
+- **Enhanced Search**: Search by customer, phone, VIN, registration, engine code, and ECU type
+- **Editable Customer Details**: Modify customer information directly from detail pages
 
 ## 🏗️ Tech Stack
 
 ### Backend
 - **Framework**: FastAPI (Python)
 - **Database**: MongoDB
-- **Authentication**: JWT with bcrypt password hashing
+- **Authentication**: JWT with bcrypt password hashing (v3.2.2)
 - **Structure**: Organized modular architecture
   - `/backend/models/` - Pydantic data models
   - `/backend/utils/` - Authentication and utility functions
@@ -122,8 +125,10 @@ tail -f /var/log/supervisor/frontend.err.log
 ## 👤 Default Credentials
 
 **Admin Account**:
-- **Username**: `IgnitionLab Dynamics`
-- **Password**: `IgnLabDyN@2025`
+- **Username**: `admin`
+- **Password**: `admin`
+
+> ⚠️ **Important**: Change the default password immediately after first login for security.
 
 ## 📊 Key API Endpoints
 
@@ -131,9 +136,12 @@ tail -f /var/log/supervisor/frontend.err.log
 - `POST /api/auth/login` - User login
 - `POST /api/auth/register` - User registration
 - `GET /api/auth/me` - Get current user
+- `PUT /api/users/me/username` - Update current user's username
+- `PUT /api/users/me/password` - Update current user's password
 
 ### Resources (all require authentication)
 - `GET/POST /api/customers` - Customer management
+- `PUT /api/customers/{id}` - Update customer details
 - `GET/POST /api/vehicles` - Vehicle management
 - `GET/POST /api/jobs` - Job management
 - `GET/POST /api/tune-revisions` - Tune revision tracking
@@ -141,6 +149,11 @@ tail -f /var/log/supervisor/frontend.err.log
 - `GET/POST /api/appointments` - Appointment scheduling
 - `GET/POST /api/reminders` - Reminder management
 - `GET /api/dashboard/stats` - Dashboard statistics
+- `GET /api/search?q=<query>` - Global search across customers, vehicles
+
+### Health Checks
+- `GET /api/health` - Basic health check
+- `GET /api/readiness` - Readiness probe for deployments
 
 ### Admin Only
 - `GET/POST /api/users` - User management
@@ -149,20 +162,25 @@ tail -f /var/log/supervisor/frontend.err.log
 ## 🔐 Security Features
 
 - JWT-based authentication with 24-hour token expiry
-- Bcrypt password hashing
+- Bcrypt password hashing (v3.2.2 for compatibility)
 - Role-based access control (Admin, Technician)
 - Protected API endpoints
 - CORS configuration
+- Secure password change functionality
 
 ## 📱 Frontend Pages
 
+- **Login**: Secure authentication with clean UI
 - **Dashboard**: Overview with stats and quick access widgets
 - **Jobs**: Filtered views (This Week, Pending Payments, All)
-- **Customers**: Customer database management
-- **Vehicles**: Vehicle database with QR codes
+- **Customers**: Customer database management with editable details
+- **Customer Detail**: View and edit customer information
+- **Vehicles**: Vehicle database with QR codes (no VIN length restriction)
 - **Vehicle Detail**: Complete vehicle history, jobs, tune revisions, PDF export
 - **Appointments**: Scheduling system
 - **Reminders**: Follow-up and service reminder tracking
+- **Profile**: Change username and password
+- **Search Results**: Display all matches from global search
 - **User Management** (Admin): User account management
 
 ## 🎨 UI/UX Features
@@ -174,6 +192,8 @@ tail -f /var/log/supervisor/frontend.err.log
 - QR code generation for vehicle records
 - PDF export for complete vehicle history
 - Form validation and error handling
+- Global search bar in header
+- Profile menu in header navigation
 
 ## 📝 Code Architecture Highlights
 
@@ -184,6 +204,8 @@ tail -f /var/log/supervisor/frontend.err.log
 ✅ MongoDB best practices (excluding `_id`, proper indexing)  
 ✅ Environment variable configuration  
 ✅ Timezone-aware datetime handling  
+✅ Health check endpoints for production deployments  
+✅ Dependency version pinning for stability  
 
 ### Frontend Best Practices
 ✅ Component-based architecture  
@@ -192,18 +214,46 @@ tail -f /var/log/supervisor/frontend.err.log
 ✅ Utility functions for formatting (dates, currency)  
 ✅ Consistent styling with Tailwind  
 ✅ Accessible UI components (Shadcn)  
+✅ Clean, minimal design  
 
 ## 🔄 Recent Updates (December 2025)
 
-1. **Dashboard Widget Filtering**: 
+### Major Features Added:
+1. **User Profile Management**:
+   - Users can change their username and password
+   - Accessible via "Profile" link in header menu
+
+2. **Enhanced Global Search**:
+   - Now searches engine code and ECU type in addition to customer/vehicle info
+   - Results displayed on dedicated `/search` page showing all matches
+   - No longer auto-navigates to first result
+
+3. **Customer Detail Editing**:
+   - "Edit Details" button on customer detail page
+   - Modal form for editing customer information
+
+4. **Dashboard Widget Filtering**: 
    - "Jobs This Week" now filters to current calendar week (Monday-Sunday)
    - "Pending Payments" shows jobs with pending/partial payment status
    - New `/jobs` page with smart filtering
 
-2. **Code Optimization**:
-   - Backend restructured with organized models and utils
-   - Improved separation of concerns
-   - Better maintainability and scalability
+5. **UI/UX Improvements**:
+   - Removed "New Job" button from main header
+   - Removed "Register here" link from login page
+   - VIN field no longer has 17-character limit
+   - Cleaner, more focused interface
+
+### Code Refactoring:
+1. **Backend Restructuring**:
+   - Monolithic `server.py` split into modular structure
+   - Models moved to `/backend/models/` directory
+   - Auth utilities moved to `/backend/utils/` directory
+   - Improved maintainability and scalability
+
+2. **Deployment Fixes**:
+   - Pinned bcrypt to v3.2.2 for compatibility with passlib
+   - Added health check endpoints (`/api/health`, `/api/readiness`)
+   - Fixed deployment-related errors
 
 3. **Database Query Optimization**:
    - All queries properly sorted before limiting results
@@ -233,6 +283,29 @@ tail -f /var/log/supervisor/frontend.err.log
 - All async functions should use proper error handling
 - Environment variables for all configuration
 
+### Important Notes
+- Never modify `bcrypt` version from 3.2.2 (deployment compatibility)
+- Always exclude `_id` from MongoDB queries
+- Use `datetime.now(timezone.utc)` for timezone-aware timestamps
+- Token expiry is set via `ACCESS_TOKEN_EXPIRE_MINUTES` in auth utils
+
+## 🐛 Known Issues & Solutions
+
+### Deployment-Related
+All deployment issues from previous versions have been resolved:
+- ✅ bcrypt compatibility fixed (v3.2.2)
+- ✅ Health check endpoints added
+- ✅ All services start correctly
+
+### User-Reported
+- Password change functionality implemented and tested on backend
+- If users experience login issues after password change, advise clearing browser cache
+
+## 📄 Documentation Files
+
+- `README.md` - This file (main documentation)
+- `DEPLOYMENT_FIXES.md` - Details about deployment fixes and health checks
+
 ## 📄 License
 
 Proprietary - IgnitionLab Dynamics
@@ -240,3 +313,6 @@ Proprietary - IgnitionLab Dynamics
 ---
 
 **Built with ❤️ for automotive tuning professionals**
+
+**Version**: 1.2.0  
+**Last Updated**: December 2025
