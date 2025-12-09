@@ -43,6 +43,34 @@ export default function Dashboard() {
     );
   }
 
+  // Get income value based on selected period
+  const getIncomeValue = () => {
+    if (!stats) return 0;
+    switch (incomePeriod) {
+      case 'weekly':
+        return stats.weekly_income || 0;
+      case 'monthly':
+        return stats.monthly_income || 0;
+      case 'all_time':
+        return stats.all_time_income || 0;
+      default:
+        return 0;
+    }
+  };
+
+  const getIncomeLabel = () => {
+    switch (incomePeriod) {
+      case 'weekly':
+        return 'Weekly Income';
+      case 'monthly':
+        return 'Monthly Income';
+      case 'all_time':
+        return 'All-Time Income';
+      default:
+        return 'Income';
+    }
+  };
+
   const statCards = [
     {
       title: 'Jobs This Week',
