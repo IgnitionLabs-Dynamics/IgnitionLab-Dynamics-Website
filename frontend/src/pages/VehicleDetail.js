@@ -105,23 +105,34 @@ export default function VehicleDetail() {
   const handleCreateTuneRevision = async (e) => {
     e.preventDefault();
     try {
-      // Find the most recent job for this vehicle to link the revision
-      const latestJob = jobs.length > 0 ? jobs[0] : null;
-      
-      if (!latestJob) {
-        toast.error('Please create a job first before adding tune revisions');
-        return;
+      if (editingRevision) {
+        // Update existing revision
+        await api.put(`/tune-revisions/${editingRevision.id}`, {
+          revision_label: revisionFormData.revision_label,
+          description: revisionFormData.description || null,
+          diff_notes: revisionFormData.diff_notes || null,
+        });
+        toast.success('Tune revision updated successfully!');
+        setEditingRevision(null);
+      } else {
+        // Create new revision
+        const latestJob = jobs.length > 0 ? jobs[0] : null;
+        
+        if (!latestJob) {
+          toast.error('Please create a job first before adding tune revisions');
+          return;
+        }
+
+        await api.post('/tune-revisions', {
+          job_id: latestJob.id,
+          vehicle_id: vehicleId,
+          revision_label: revisionFormData.revision_label,
+          description: revisionFormData.description || null,
+          diff_notes: revisionFormData.diff_notes || null,
+        });
+        toast.success('Tune revision added successfully!');
       }
 
-      await api.post('/tune-revisions', {
-        job_id: latestJob.id,
-        vehicle_id: vehicleId,
-        revision_label: revisionFormData.revision_label,
-        description: revisionFormData.description || null,
-        diff_notes: revisionFormData.diff_notes || null,
-      });
-
-      toast.success('Tune revision added successfully!');
       setRevisionDialogOpen(false);
       setRevisionFormData({
         revision_label: '',
@@ -133,8 +144,76 @@ export default function VehicleDetail() {
       const revisionsRes = await api.get(`/tune-revisions?vehicle_id=${vehicleId}`);
       setTuneRevisions(revisionsRes.data);
     } catch (error) {
-      console.error('Failed to create tune revision:', error);
-      toast.error('Failed to create tune revision');
+      console.error('Failed to save tune revision:', error);
+      toast.error('Failed to save tune revision');
+    }
+  };
+
+  const handleEditRevision = (revision) => {
+    setEditingRevision(revision);
+    setRevisionFormData({
+      revision_label: revision.revision_label,
+      description: revision.description || '',
+      diff_notes: revision.diff_notes || '',
+    });
+    setRevisionDialogOpen(true);
+  };
+
+  const handleEditJob = (job) => {
+    setEditingJob(job);
+    setJobFormData({
+      date: job.date.split('T')[0],
+      technician_name: job.technician_name,
+      work_performed: job.work_performed || '',
+      tune_stage: job.tune_stage || '',
+      mods_installed: job.mods_installed || '',
+      dyno_results: job.dyno_results || '',
+      before_ecu_map_version: job.before_ecu_map_version || '',
+      after_ecu_map_version: job.after_ecu_map_version || '',
+      calibration_notes: job.calibration_notes || '',
+      road_test_notes: job.road_test_notes || '',
+      next_recommendations: job.next_recommendations || '',
+      warranty_or_retune_status: job.warranty_or_retune_status || '',
+      odometer_at_visit: job.odometer_at_visit || '',
+    });
+    setEditJobDialogOpen(true);
+  };
+
+  const handleUpdateJob = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/jobs/${editingJob.id}`, {
+        ...jobFormData,
+        vehicle_id: vehicleId,
+        customer_id: customer.id,
+        odometer_at_visit: jobFormData.odometer_at_visit ? parseInt(jobFormData.odometer_at_visit) : null,
+      });
+
+      toast.success('Job updated successfully!');
+      setEditJobDialogOpen(false);
+      setEditingJob(null);
+      setJobFormData({
+        date: '',
+        technician_name: '',
+        work_performed: '',
+        tune_stage: '',
+        mods_installed: '',
+        dyno_results: '',
+        before_ecu_map_version: '',
+        after_ecu_map_version: '',
+        calibration_notes: '',
+        road_test_notes: '',
+        next_recommendations: '',
+        warranty_or_retune_status: '',
+        odometer_at_visit: '',
+      });
+
+      // Refresh jobs
+      const jobsRes = await api.get(`/jobs?vehicle_id=${vehicleId}`);
+      setJobs(jobsRes.data);
+    } catch (error) {
+      console.error('Failed to update job:', error);
+      toast.error('Failed to update job');
     }
   };
 
