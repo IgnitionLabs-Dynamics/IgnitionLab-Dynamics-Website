@@ -18,6 +18,9 @@ export default function Jobs() {
   const [customers, setCustomers] = useState({});
   const [billings, setBillings] = useState({});
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchData();
