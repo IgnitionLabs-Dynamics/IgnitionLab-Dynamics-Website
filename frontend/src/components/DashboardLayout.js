@@ -193,11 +193,11 @@ export default function DashboardLayout({ children }) {
                     })}
                   </div>
                   <div className="text-zinc-400 text-xs">
-                    {currentDateTime.toLocaleTimeString('en-GB', { 
+                    {currentDateTime.toLocaleTimeString('en-US', { 
                       hour: '2-digit', 
                       minute: '2-digit', 
                       second: '2-digit',
-                      hour12: false
+                      hour12: true
                     })}
                   </div>
                 </div>
