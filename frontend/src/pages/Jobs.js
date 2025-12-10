@@ -100,6 +100,30 @@ export default function Jobs() {
     return 'Complete list of all jobs';
   };
 
+  const handleDeleteClick = (job) => {
+    setJobToDelete(job);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!jobToDelete) return;
+
+    setDeleting(true);
+    try {
+      await api.delete(`/jobs/${jobToDelete.id}`);
+      toast.success('Job deleted successfully');
+      setDeleteDialogOpen(false);
+      setJobToDelete(null);
+      // Refresh the jobs list
+      fetchData();
+    } catch (error) {
+      console.error('Failed to delete job:', error);
+      toast.error('Failed to delete job');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
