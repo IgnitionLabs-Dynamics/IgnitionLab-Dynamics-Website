@@ -247,18 +247,32 @@ export default function Jobs() {
                       </div>
                     </div>
 
-                    {vehicle && (
-                      <Link to={`/vehicles/${vehicle.id}`}>
+                    <div className="flex flex-col gap-2">
+                      {vehicle && (
+                        <Link to={`/vehicle/${vehicle.id}`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10 w-full"
+                          >
+                            View Details
+                            <ChevronRight className="w-4 h-4 ml-1" />
+                          </Button>
+                        </Link>
+                      )}
+                      
+                      {filter === 'pending_payments' && (
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
+                          onClick={() => handleDeleteClick(job)}
+                          className="border-red-500/30 text-red-500 hover:bg-red-500/10 w-full"
                         >
-                          View Details
-                          <ChevronRight className="w-4 h-4 ml-1" />
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete
                         </Button>
-                      </Link>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </Card>
               );
