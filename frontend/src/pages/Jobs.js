@@ -3,9 +3,10 @@ import { useSearchParams, Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import api from '../lib/api';
 import { toast } from 'sonner';
-import { Briefcase, Calendar, User, Car, ChevronRight, CreditCard } from 'lucide-react';
+import { Briefcase, Calendar, User, Car, ChevronRight, CreditCard, Trash2 } from 'lucide-react';
 import { formatDate } from '../lib/utils';
 
 export default function Jobs() {
