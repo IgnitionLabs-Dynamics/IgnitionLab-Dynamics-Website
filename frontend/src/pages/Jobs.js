@@ -294,6 +294,50 @@ export default function Jobs() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="bg-zinc-900 border-zinc-800">
+          <DialogHeader>
+            <DialogTitle className="text-white">Delete Job</DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Are you sure you want to delete this job? This will also delete:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>All associated billing records</li>
+                <li>All tune revisions for this job</li>
+              </ul>
+              <p className="mt-3 text-red-400 font-medium">This action cannot be undone.</p>
+            </DialogDescription>
+          </DialogHeader>
+          
+          {jobToDelete && (
+            <div className="bg-zinc-800/50 p-4 rounded border border-zinc-700 my-4">
+              <p className="text-sm text-zinc-400">Job ID</p>
+              <p className="text-white font-mono">#{jobToDelete.id.slice(0, 8)}</p>
+              <p className="text-sm text-zinc-400 mt-2">Work Performed</p>
+              <p className="text-white">{jobToDelete.work_performed || 'Tuning service'}</p>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleting}
+              className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteConfirm}
+              disabled={deleting}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              {deleting ? 'Deleting...' : 'Delete Job'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
