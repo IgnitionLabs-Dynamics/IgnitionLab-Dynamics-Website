@@ -77,6 +77,8 @@ A comprehensive, production-ready web application for managing vehicle servicing
 - Python 3.11+
 - Node.js 18+
 - MongoDB
+- **Windows**: Git Bash or WSL2 (recommended) for running bash commands
+- **Linux/macOS**: Terminal with bash
 
 ### Environment Variables
 
@@ -96,6 +98,8 @@ REACT_APP_BACKEND_URL=<backend_api_url>
 
 ### Installation & Running
 
+#### **Option 1: Production Environment (Kubernetes/Docker)**
+
 The application runs in a Kubernetes environment with hot reload enabled:
 
 **Backend**: 
@@ -109,21 +113,176 @@ The application runs in a Kubernetes environment with hot reload enabled:
 - Managed by Supervisor
 
 **Restart services** (only needed after .env changes or dependency installation):
+
+**Linux/macOS:**
 ```bash
 sudo supervisorctl restart backend
 sudo supervisorctl restart frontend
 ```
 
-**Check status**:
+**Check status:**
 ```bash
 sudo supervisorctl status
 ```
 
-**View logs**:
+**View logs:**
 ```bash
 tail -f /var/log/supervisor/backend.err.log
 tail -f /var/log/supervisor/frontend.err.log
 ```
+
+#### **Option 2: Local Development (Windows/Linux/macOS)**
+
+**1. Install MongoDB**
+
+**Windows:**
+- Download MongoDB Community Server from [mongodb.com](https://www.mongodb.com/try/download/community)
+- Install and start MongoDB service
+- Default connection: `mongodb://localhost:27017`
+
+**Linux:**
+```bash
+sudo apt-get update
+sudo apt-get install -y mongodb
+sudo systemctl start mongodb
+sudo systemctl enable mongodb
+```
+
+**macOS:**
+```bash
+brew tap mongodb/brew
+brew install mongodb-community
+brew services start mongodb-community
+```
+
+**2. Set up Backend**
+
+**Windows (PowerShell/Command Prompt):**
+```cmd
+cd backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+**Linux/macOS:**
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Create `.env` file** in `/backend/` with:
+```env
+MONGO_URL=mongodb://localhost:27017
+DB_NAME=ignitionlab_db
+SECRET_KEY=your-secret-key-here-change-in-production
+FRONTEND_URL=http://localhost:3000
+CORS_ORIGINS=*
+```
+
+**Run Backend:**
+
+**Windows:**
+```cmd
+venv\Scripts\activate
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+```
+
+**Linux/macOS:**
+```bash
+source venv/bin/activate
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+```
+
+**3. Set up Frontend**
+
+**Windows (PowerShell/Command Prompt):**
+```cmd
+cd frontend
+npm install
+```
+Or use Yarn:
+```cmd
+yarn install
+```
+
+**Linux/macOS:**
+```bash
+cd frontend
+npm install
+# or
+yarn install
+```
+
+**Create `.env` file** in `/frontend/` with:
+```env
+REACT_APP_BACKEND_URL=http://localhost:8001
+```
+
+**Run Frontend:**
+
+**Windows:**
+```cmd
+npm start
+```
+Or with Yarn:
+```cmd
+yarn start
+```
+
+**Linux/macOS:**
+```bash
+npm start
+# or
+yarn start
+```
+
+**4. Access Application**
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8001`
+- API Documentation: `http://localhost:8001/docs`
+
+**5. Verify Installation**
+
+Open your browser and navigate to `http://localhost:3000`. You should see the login page.
+
+**Troubleshooting:**
+
+**Windows-Specific Issues:**
+
+1. **Port Already in Use:**
+   - Check what's using port 3000: `netstat -ano | findstr :3000`
+   - Kill process: `taskkill /PID <process_id> /F`
+   - For port 8001: `netstat -ano | findstr :8001`
+
+2. **MongoDB Connection Error:**
+   - Verify MongoDB is running: Check Services (Win + R, type `services.msc`)
+   - Look for "MongoDB Server" service
+   - If not running, start it
+
+3. **Python Virtual Environment:**
+   - If `venv\Scripts\activate` doesn't work, try: `venv\Scripts\activate.bat`
+   - Or use: `python -m venv venv --clear` to recreate
+
+4. **Node/NPM Errors:**
+   - Clear cache: `npm cache clean --force`
+   - Delete `node_modules` and `package-lock.json`, then reinstall
+
+**Linux/macOS Issues:**
+
+1. **Permission Errors:**
+   ```bash
+   sudo chown -R $USER:$USER /path/to/project
+   ```
+
+2. **Port in Use:**
+   ```bash
+   lsof -ti:3000 | xargs kill -9
+   lsof -ti:8001 | xargs kill -9
+   ```
 
 ## 👤 Default Credentials
 
